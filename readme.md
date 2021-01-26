@@ -10,6 +10,11 @@ So now you can be even more focused on your analysis than on find from where to 
 
 TBU
 
+## Our Friends
+
+- <a href="https://github.com/DistrictDataLabs/yellowbrick">Yellowbrick</a> - visual analysis and diagnostic tools to facilitate Sklearn model selection
+- <a href="https://github.com/philipperemy/keract">Keract</a> - Plots Keras layer activations
+
 ## Credentials
 
 Made with ❤️ by Roman Glushko (c)
