@@ -40,7 +40,7 @@ def plot_training_history(
     Plot Keras training history comparing metrics on train and validation datasets
     """
     training_history = training_history.history
-
+    
     best_epoch = np.argmax(training_history[best_epoch_metric])
 
     _, axes = plt.subplots(1, len(metrics), figsize=figsize)
