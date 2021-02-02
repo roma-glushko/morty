@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "morty"
-version = "0.1.1"
+version = "0.1.2-dev"
 description = "Morty is an open source library that collects frequently used Sklearn, Keras, Tensorflow snippets and converts them into handy oneliners."
 readme = "README.md"
 homepage = "https://github.com/roma-glushko/morty"
@@ -8,7 +8,7 @@ authors = ["Roman Glushko <roman.glushko.m@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = ">=3.7"
 numpy = "^1.19.5"
 matplotlib = "^3.3.3"
 pandas = "^1.2.1"
