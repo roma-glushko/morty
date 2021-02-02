@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "morty"
-version = "0.1.0"
+version = "0.1.1"
 description = "Morty is an open source library that collects frequently used Sklearn, Keras, Tensorflow snippets and converts them into handy oneliners."
 readme = "README.md"
 homepage = "https://github.com/roma-glushko/morty"
