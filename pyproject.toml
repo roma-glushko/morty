@@ -13,6 +13,7 @@ numpy = "^1.19.5"
 matplotlib = "^3.3.3"
 pandas = "^1.2.1"
 tensorflow = "^2.4.1"
+attrdict = "^2.0.1"
 
 [tool.poetry.dev-dependencies]
 ipykernel = "^5.4.3"
