@@ -3,5 +3,6 @@ args = {
     'batch_size': 32,
     'sgd': {
         'momentum': 0.9,
-    }
+    },
+    'scheduler': 'cosine_scheduler'
 }

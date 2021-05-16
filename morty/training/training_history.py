@@ -34,7 +34,7 @@ def build_table(headers, rows, digits=4):
 
 def plot_training_history(
         training_history,
-        metrics=['loss', 'accuracy'],
+        metrics=('loss', 'accuracy'),
         best_epoch_metric='val_accuracy',
         figsize=(15, 5)
 ):
