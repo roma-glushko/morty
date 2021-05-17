@@ -8,6 +8,8 @@ class ComponentFactory(Iterable[Tuple[str, Any]]):
     ComponentFactory is a handy way to create a custom factory to
     create your ML components (losses, optimizers, feature extractors, etc) in a configurable way.
 
+    Inspired by: https://github.com/facebookresearch/fvcore/blob/master/fvcore/common/registry.py
+
     To create a registry (e.g. a scheduler registry):
     .. code-block:: python
         scheduler_factory = ComponentFactory('scheduler')
