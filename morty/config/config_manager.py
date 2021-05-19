@@ -46,7 +46,7 @@ class ConfigManager:
         return getattr(self.args, name)
 
     def __repr__(self):
-        return 'ConfigManager({})'.format(json.dumps(self.args, indent=2))
+        return 'ConfigManager({})'.format(json.dumps(self.args, indent=2, default=str))
 
 
 class NotebookConfigManager:
