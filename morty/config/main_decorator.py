@@ -6,7 +6,7 @@ from textwrap import dedent
 from typing import Callable, Optional, Any
 
 from .config_manager import ConfigManager
-from .runner_arguments import get_arg_parser
+from .arguments_runner import get_arg_parser
 
 RunFunction = Callable[[Any], Any]
 
@@ -87,7 +87,7 @@ def run_func_with_config(
 
     validate_config_path(config_path)
 
-    config = ConfigManager(config_path, config_name)
+    config = ConfigManager(config_path, config_name, console_args=args.__dict__)
 
     run_func(config)
 

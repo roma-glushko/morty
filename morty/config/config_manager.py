@@ -3,6 +3,7 @@ import os
 import sys
 import importlib
 from textwrap import dedent
+from typing import Optional, Dict, Any
 
 from attrdict import AttrDict
 
@@ -12,10 +13,15 @@ class ConfigManager:
     ConfigManager is a handy way to gather your shared and private configs from different sources.
     """
 
-    def __init__(self, config_path: str, config_name: str):
-        args = self.load_config(config_path, config_name)
+    def __init__(self, config_path: str, config_name: str, console_args: Optional[Dict[str, Any]] = None):
+        config_args = self.load_config(config_path, config_name)
 
-        args['config_file'] = os.path.join(config_path, config_name)
+        # merge configs from all sources
+        args = {
+            **config_args,
+            **console_args,
+            'config_file': os.path.join(config_path, config_name),
+        }
 
         self.args = AttrDict(args)
 
