@@ -14,18 +14,23 @@ RunFunction = Callable[[Any], Any]
 def main(
         config_path: Optional[str] = None,
         config_name: Optional[str] = None,
+        argument_parser: Optional[ArgumentParser] = None,
 ) -> Callable[[RunFunction], Any]:
     """
     @see https://github.com/facebookresearch/hydra/blob/master/hydra/main.py
     """
 
-    def main_decorator(run_func: RunFunction) -> Callable[[], None]:
+    def decorate_main_func(run_func: RunFunction) -> Callable[[], None]:
         @functools.wraps(run_func)
         def decorated_main(config: Optional[ConfigManager] = None) -> Any:
             if config is not None:
+                # todo: document this case or remove it
                 return run_func(config)
 
-            arg_parser = get_arg_parser()
+            arg_parser = argument_parser
+
+            if arg_parser is None:
+                arg_parser = get_arg_parser()
 
             run_func_with_config(
                 args_parser=arg_parser,
@@ -36,7 +41,7 @@ def main(
 
         return decorated_main
 
-    return main_decorator
+    return decorate_main_func
 
 
 def validate_config_path(config_path: Optional[str]) -> None:
