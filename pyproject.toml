@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "morty"
-version = "0.2.2-dev"
+version = "0.2.3-dev"
 description = "TBU"
 readme = "README.md"
 homepage = "https://github.com/roma-glushko/morty"
