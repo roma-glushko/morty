@@ -16,6 +16,11 @@ class ConfigManager:
     def __init__(self, config_path: str, config_name: str, console_args: Optional[Dict[str, Any]] = None):
         config_args = self.load_config(config_path, config_name)
 
+        if console_args is None:
+            console_args = {}
+
+        # todo: console args that were not specified can override configs with None values
+
         # merge configs from all sources
         args = {
             **config_args,
