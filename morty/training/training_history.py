@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 
 '''
 
+
 def build_table(headers, rows, digits=4):
     """
     Build a text table from headers and rows.
@@ -20,27 +21,28 @@ def build_table(headers, rows, digits=4):
     width = max(*header_item_lens, digits)
 
     head_fmt = '{:>{width}s}' + ' {:>9} ' * len(headers)
-    row_fmt = ' {:>9}' + ' {:>9.{digits}f}' * 2 + ' {:>9}' + '\n' 
+    row_fmt = ' {:>9}' + ' {:>9.{digits}f}' * 2 + ' {:>9}' + '\n'
 
     table = head_fmt.format('', *headers, width=width)
     table += '\n\n'
 
     for row in rows:
         table += row_fmt.format(*row, width=width, digits=digits)
-    
+
     return table
 
+
 def plot_training_history(
-    training_history, 
-    metrics=['loss', 'accuracy'], 
-    best_epoch_metric='val_accuracy', 
-    figsize=(15, 5)
+        training_history,
+        metrics=('loss', 'accuracy'),
+        best_epoch_metric='val_accuracy',
+        figsize=(15, 5)
 ):
     """
     Plot Keras training history comparing metrics on train and validation datasets
     """
     training_history = training_history.history
-    
+
     best_epoch = np.argmax(training_history[best_epoch_metric])
 
     _, axes = plt.subplots(1, len(metrics), figsize=figsize)
@@ -54,12 +56,12 @@ def plot_training_history(
         ax.set_title(metric)
         ax.set_xlabel('Epoch')
         ax.set_ylabel(metric)
-        
+
         ax.plot(train_metric, label='Train', linestyle='--')
         ax.plot(val_metric, label='Validation')
         ax.grid(linestyle='--', linewidth=1, alpha=0.5)
         ax.legend()
-        
+
         axes[idx].axvline(
             best_epoch,
             ls='--',
@@ -67,15 +69,15 @@ def plot_training_history(
             lw=1,
             label='Best Epoch'
         )
-    
+
     rows = []
-    
+
     for metric in metrics:
         rows.append([
-            metric, 
-            training_history[metric][best_epoch], 
+            metric,
+            training_history[metric][best_epoch],
             training_history['val_' + metric][best_epoch],
             best_epoch,
         ])
-    
+
     return build_table(['Train', 'Validation', 'Best Epoch'], rows)

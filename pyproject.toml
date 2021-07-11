@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "morty"
-version = "0.1.2-dev"
-description = "Morty is an open source library that collects frequently used Sklearn, Keras, Tensorflow snippets and converts them into handy oneliners."
+version = "0.0.0"
+description = "TBU"
 readme = "README.md"
 homepage = "https://github.com/roma-glushko/morty"
 authors = ["Roman Glushko <roman.glushko.m@gmail.com>"]
@@ -13,10 +13,18 @@ numpy = "^1.19.5"
 matplotlib = "^3.3.3"
 pandas = "^1.2.1"
 tensorflow = "^2.4.1"
+attrdict = "^2.0.1"
+tabulate = "^0.8.9"
+funkybob = "^2018.5.1"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "semver"
 
 [tool.poetry.dev-dependencies]
 ipykernel = "^5.4.3"
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
+requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
 build-backend = "poetry.core.masonry.api"
