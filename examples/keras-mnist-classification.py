@@ -27,9 +27,9 @@ def train(config: ConfigManager) -> None:
     x_train = np.expand_dims(x_train, -1)
     x_test = np.expand_dims(x_test, -1)
 
-    print("x_train shape: ", x_train.shape)
-    print(x_train.shape[0], "train samples")
-    print(x_test.shape[0], "test samples")
+    print(f"x_train shape: {x_train.shape}")
+    print(f"{x_train.shape[0]} train samples")
+    print(f"{x_test.shape[0]} test samples")
 
     # convert class vectors to binary class matrices
     y_train = keras.utils.to_categorical(y_train, config.num_classes)
@@ -38,20 +38,20 @@ def train(config: ConfigManager) -> None:
     model = keras.Sequential(
         [
             keras.Input(shape=config.image_shape),
-            layers.Conv2D(32, kernel_size=(3, 3), activation="relu"),
+            layers.Conv2D(32, kernel_size=(3, 3), activation='relu'),
             layers.MaxPooling2D(pool_size=(2, 2)),
-            layers.Conv2D(64, kernel_size=(3, 3), activation="relu"),
+            layers.Conv2D(64, kernel_size=(3, 3), activation='relu'),
             layers.MaxPooling2D(pool_size=(2, 2)),
             layers.Flatten(),
             layers.Dropout(0.5),
-            layers.Dense(config.num_classes, activation="softmax"),
+            layers.Dense(config.num_classes, activation='softmax'),
         ]
     )
 
     model.compile(
-        loss="categorical_crossentropy",
-        optimizer="adam",
-        metrics=["accuracy"],
+        loss='categorical_crossentropy',
+        optimizer='adam',
+        metrics=['accuracy'],
     )
 
     model.summary()

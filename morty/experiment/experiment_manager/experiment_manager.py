@@ -63,6 +63,8 @@ class Experiment:
     def start(self):
         Path(self.get_directory()).mkdir(parents=True, exist_ok=True)
 
+        # todo: run all standard trackers
+
     def finish(self):
         pass
 
