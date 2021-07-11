@@ -8,11 +8,13 @@ from tensorflow import keras
 from tensorflow.keras import layers
 
 from morty.config import main, ConfigManager
+from morty.experiment.experiment_manager import ExperimentManager, Experiment
+from morty.experiment.experiment_manager.tensorflow import TrainingTracker
 
 
 @main(config_path='configs', config_name='basic_config')
 def train(config: ConfigManager) -> None:
-    experiment: Experiment = ExperimentManager(config=config).create()
+    experiment: Experiment = ExperimentManager(configs=config).create()
 
     # the data, split between train and test sets
     (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
@@ -50,9 +52,6 @@ def train(config: ConfigManager) -> None:
         loss="categorical_crossentropy",
         optimizer="adam",
         metrics=["accuracy"],
-        callbacks=[
-            TrainingTracker(experiment)
-        ]
     )
 
     model.summary()
@@ -62,14 +61,17 @@ def train(config: ConfigManager) -> None:
         epochs=config.epochs,
         batch_size=config.batch_size,
         validation_split=config.val_dataset_fraction,
+        callbacks=[
+            TrainingTracker(experiment)
+        ]
     )
 
     experiment.log_artifact('training_history.pkl', training_history)
 
-    score = model.evaluate(x_test, y_test, verbose=0)
+    test_loss, test_accuracy = model.evaluate(x_test, y_test, verbose=0)
 
-    print("Test loss: ", score[0])
-    print("Test accuracy: ", score[1])
+    print(f"Test loss: {test_loss}")
+    print(f"Test accuracy: {test_accuracy}")
 
 
 if __name__ == "__main__":

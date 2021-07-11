@@ -118,6 +118,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "funkybob"
+version = "2018.5.1"
+description = ""
+category = "main"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "gast"
 version = "0.3.3"
 description = "Python AST that abstracts the underlying Python version"
@@ -808,7 +816,7 @@ testing = ["pytest (>=4.6)", "pytest-checkdocs (>=1.2.3)", "pytest-flake8", "pyt
 [metadata]
 lock-version = "1.1"
 python-versions = ">=3.7"
-content-hash = "5c8b663cca300b9879d82aaca8dd19410c6d8dc28651b075e73f4ed9d526178c"
+content-hash = "45c0b89d441fd7553ac9a910d380c8e6f5a232e866a70e10c6db26667d12bd7b"
 
 [metadata.files]
 absl-py = [
@@ -896,6 +904,9 @@ decorator = [
 flatbuffers = [
     {file = "flatbuffers-1.12-py2.py3-none-any.whl", hash = "sha256:9e9ef47fa92625c4721036e7c4124182668dc6021d9e7c73704edd395648deb9"},
     {file = "flatbuffers-1.12.tar.gz", hash = "sha256:63bb9a722d5e373701913e226135b28a6f6ac200d5cc7b4d919fa38d73b44610"},
+]
+funkybob = [
+    {file = "funkybob-2018.5.1.tar.gz", hash = "sha256:e61b741c1d6f63a97506c30c48b74a166fb1640f4192515b92fa102e7d252987"},
 ]
 gast = [
     {file = "gast-0.3.3-py2.py3-none-any.whl", hash = "sha256:8f46f5be57ae6889a4e16e2ca113b1703ef17f2b0abceb83793eaba9e1351a45"},

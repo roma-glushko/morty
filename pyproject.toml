@@ -15,6 +15,7 @@ pandas = "^1.2.1"
 tensorflow = "^2.4.1"
 attrdict = "^2.0.1"
 tabulate = "^0.8.9"
+funkybob = "^2018.5.1"
 
 [tool.poetry-dynamic-versioning]
 enable = true

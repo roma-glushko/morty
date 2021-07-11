@@ -1,5 +1,9 @@
 import os
 import pickle
+from datetime import datetime
+from pathlib import Path
+
+from funkybob import RandomNameGenerator
 from typing import Optional, TypedDict, Any
 
 
@@ -14,19 +18,21 @@ class ExperimentContext(TypedDict):
 class Experiment:
     """
     Experiment represents context of the current experiment
-    with a set of methods to save useful information
+    with a set of methods to persist useful information
     """
-    root_directory: str
-    experiment_id: Optional[str] = None
-    experiment_directory: Optional[str] = None
 
     def __init__(self, root_directory: str, experiment_context: Optional[ExperimentContext] = None):
-        self.root_directory = root_directory
+        self.root_directory: str = root_directory
 
         if experiment_context:
             # loading existing experiment
-            self.experiment_id = experiment_context.id
-            self.experiment_directory = experiment_context.directory
+            self.experiment_id: str = experiment_context.id
+            self.experiment_directory: str = experiment_context.directory
+
+        if not experiment_context:
+            # creating a new experiment
+            self.experiment_id = self.generate_experiment_id()
+            self.experiment_directory = self.experiment_id
 
     def get_directory(self) -> str:
         """
@@ -52,18 +58,25 @@ class Experiment:
         Log configs as a text file
         """
         config_path: str = self.get_file_path('config.{}'.format(file_ext))
-        pickle.dump(str(configs), open(config_path, 'w'))
+        pickle.dump(str(configs), open(config_path, 'wb'))
 
     def start(self):
-        pass
+        Path(self.get_directory()).mkdir(parents=True, exist_ok=True)
 
     def finish(self):
         pass
 
+    @staticmethod
+    def generate_experiment_id() -> str:
+        readable_id: str = next(iter(RandomNameGenerator()))
+        timestamp: str = datetime.now().strftime('%Y%m%d_%H%M%S')
+
+        return f'{timestamp}_{readable_id}'
+
 
 class ExperimentManager:
     """
-
+    ExperimentManager performs high level operations like experiment creation or loading
     """
     root_directory: str
     configs: Any
@@ -80,6 +93,8 @@ class ExperimentManager:
         Create a new experiment
         """
         experiment: Experiment = Experiment(self.root_directory)
+
+        experiment.start()
 
         if self.configs:
             experiment.log_configs(self.configs)
