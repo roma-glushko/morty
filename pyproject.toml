@@ -8,7 +8,7 @@ authors = ["Roman Glushko <roman.glushko.m@gmail.com>"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = ">=3.7"
+python = ">=3.7,<4.0"
 numpy = "^1.19.5"
 matplotlib = "^3.3.3"
 pandas = "^1.2.1"
@@ -24,6 +24,10 @@ style = "semver"
 
 [tool.poetry.dev-dependencies]
 ipykernel = "^5.4.3"
+flake8 = "^3.9.2"
+black = "^21.7b0"
+isort = "^5.9.3"
+mypy = "^0.910"
 
 [build-system]
 requires = ["poetry-core>=1.0.0", "poetry-dynamic-versioning"]
