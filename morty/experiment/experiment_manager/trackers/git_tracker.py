@@ -1,5 +1,3 @@
-
-
 class GitTracker:
     """
     Track project repository information:
@@ -7,4 +5,5 @@ class GitTracker:
     - current commit hash
     - save untracked changes as a patch
     """
+
     pass

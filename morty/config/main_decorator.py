@@ -3,18 +3,18 @@ import os
 from argparse import ArgumentParser
 from os.path import splitext
 from textwrap import dedent
-from typing import Callable, Optional, Any
+from typing import Any, Callable, Optional
 
-from .config_manager import ConfigManager
 from .arguments_runner import get_arg_parser
+from .config_manager import ConfigManager
 
 RunFunction = Callable[[Any], Any]
 
 
 def main(
-        config_path: Optional[str] = None,
-        config_name: Optional[str] = None,
-        argument_parser: Optional[ArgumentParser] = None,
+    config_path: Optional[str] = None,
+    config_name: Optional[str] = None,
+    argument_parser: Optional[ArgumentParser] = None,
 ) -> Callable[[RunFunction], Any]:
     """
     @see https://github.com/facebookresearch/hydra/blob/master/hydra/main.py
@@ -72,10 +72,10 @@ def validate_config_path(config_path: Optional[str]) -> None:
 
 
 def run_func_with_config(
-        args_parser: ArgumentParser,
-        run_func: RunFunction,
-        config_path: Optional[str],
-        config_name: Optional[str],
+    args_parser: ArgumentParser,
+    run_func: RunFunction,
+    config_path: Optional[str],
+    config_name: Optional[str],
 ) -> None:
     args = args_parser.parse_args()
 
@@ -90,4 +90,3 @@ def run_func_with_config(
     config = ConfigManager(config_path, config_name, console_args=args.__dict__)
 
     run_func(config)
-

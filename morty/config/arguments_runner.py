@@ -1,7 +1,7 @@
 from argparse import ArgumentParser
 
 
-def get_arg_parser(description: str = 'Morty') -> ArgumentParser:
+def get_arg_parser(description: str = "Morty") -> ArgumentParser:
     """
     Get ArgumentParser with morty-related arguments
     """
