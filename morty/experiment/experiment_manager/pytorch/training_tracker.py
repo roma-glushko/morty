@@ -7,7 +7,7 @@ except ImportError:
         from keras.callbacks import Callback
     except ImportError:
         msg = """
-            You are trying to use TrainingTracker for Tensorflow/Keras. 
+            You are trying to use TrainingTracker for Tensorflow/Keras.
             However, these libraries don't found. Please install them via:
             - pip install tensorflow
             - poetry add tensorflow"""

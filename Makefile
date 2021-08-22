@@ -7,5 +7,8 @@ isort:
 black:
 	black .
 
+mypy:
+	mypy ./morty ./examples
+
 lint:
 	make isort && make black && make flake
