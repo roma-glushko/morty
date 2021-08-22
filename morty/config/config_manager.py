@@ -1,9 +1,9 @@
+import importlib
 import json
 import os
 import sys
-import importlib
 from textwrap import dedent
-from typing import Optional, Dict, Any
+from typing import Any, Dict, Optional
 
 from attrdict import AttrDict
 
@@ -13,7 +13,12 @@ class ConfigManager:
     ConfigManager is a handy way to gather your shared and private configs from different sources.
     """
 
-    def __init__(self, config_path: str, config_name: str, console_args: Optional[Dict[str, Any]] = None):
+    def __init__(
+        self,
+        config_path: str,
+        config_name: str,
+        console_args: Optional[Dict[str, Any]] = None,
+    ):
         config_args = self.load_config(config_path, config_name)
 
         if console_args is None:
@@ -25,7 +30,7 @@ class ConfigManager:
         args = {
             **config_args,
             **console_args,
-            'config_file': os.path.join(config_path, config_name),
+            "config_file": os.path.join(config_path, config_name),
         }
 
         self.args = AttrDict(args)
@@ -36,7 +41,7 @@ class ConfigManager:
 
         config_module = importlib.import_module(config_name)
 
-        if not hasattr(config_module, 'args'):
+        if not hasattr(config_module, "args"):
             msg = dedent(
                 """\
             config_name should have args dictionary declared
@@ -51,7 +56,7 @@ class ConfigManager:
         return getattr(self.args, name)
 
     def __repr__(self):
-        return 'ConfigManager({})'.format(json.dumps(self.args, indent=2, default=str))
+        return "ConfigManager({})".format(json.dumps(self.args, indent=2, default=str))
 
 
 class NotebookConfigManager:
@@ -66,4 +71,4 @@ class NotebookConfigManager:
         return getattr(self.args, name)
 
     def __repr__(self):
-        return 'NotebookConfigManager({})'.format(json.dumps(self.args, indent=2))
+        return "NotebookConfigManager({})".format(json.dumps(self.args, indent=2))

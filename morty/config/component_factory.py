@@ -1,4 +1,4 @@
-from typing import Dict, Any, Iterator, Tuple, Iterable
+from typing import Any, Dict, Iterable, Iterator, Tuple
 
 from tabulate import tabulate
 
@@ -23,6 +23,7 @@ class ComponentFactory(Iterable[Tuple[str, Any]]):
     .. code-block:: python
         scheduler_factory.register(CosineScheduler)
     """
+
     component_map: Dict[str, Any] = {}
 
     def __init__(self, factory_name: str) -> None:
@@ -56,8 +57,11 @@ class ComponentFactory(Iterable[Tuple[str, Any]]):
         return decorate_component
 
     def register_component(self, component_name: str, component: Any) -> None:
-        assert (component_name not in self.component_map), \
-            "An object named '{}' was already registered in '{}' factory!".format(component_name, self.factory_name)
+        assert (
+            component_name not in self.component_map
+        ), "An object named '{}' was already registered in '{}' factory!".format(
+            component_name, self.factory_name
+        )
 
         self.component_map[component_name] = component
 
@@ -67,7 +71,9 @@ class ComponentFactory(Iterable[Tuple[str, Any]]):
 
         if component is None:
             raise KeyError(
-                "No object named '{}' found in '{}' registry!".format(component, self.factory_name)
+                "No object named '{}' found in '{}' registry!".format(
+                    component, self.factory_name
+                )
             )
 
         return component
@@ -80,7 +86,7 @@ class ComponentFactory(Iterable[Tuple[str, Any]]):
         table = tabulate(
             self.component_map.items(),
             headers=["Names", "Components"],
-            tablefmt="fancy_grid"
+            tablefmt="fancy_grid",
         )
 
         return "Factory of {}:\n".format(self.factory_name) + table

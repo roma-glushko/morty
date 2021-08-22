@@ -15,7 +15,6 @@ except ImportError:
 
 
 class TrainingTracker(Callback):
-
     def __init__(self, experiment: Experiment):
         super().__init__()
 
