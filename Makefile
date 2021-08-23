@@ -11,4 +11,4 @@ mypy:
 	mypy ./morty ./examples
 
 lint:
-	make isort && make black && make flake
+	make isort && make black && make flake  && make mypy
