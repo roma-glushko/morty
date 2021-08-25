@@ -63,7 +63,9 @@ class Experiment:
         Log configs as a text file
         """
         config_path: Path = self.get_file_path("config.{}".format(file_ext))
-        pickle.dump(str(configs), open(config_path, "wb"))
+
+        with open(config_path, "w") as config_file:
+            config_file.writelines(str(configs))
 
     def start(self):
         self.get_directory().mkdir(parents=True, exist_ok=True)

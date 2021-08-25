@@ -11,7 +11,7 @@ def enable_tf_tpu_support() -> tf.distribute.Strategy:
     """
     try:
         tpu_cluster = tf.distribute.cluster_resolver.TPUClusterResolver()
-        print("Device: ", tpu_cluster.master())
+        print(f"Device: {tpu_cluster.master()}")
 
         tf.config.experimental_connect_to_cluster(tpu_cluster)
         tf.tpu.experimental.initialize_tpu_system(tpu_cluster)
@@ -19,6 +19,6 @@ def enable_tf_tpu_support() -> tf.distribute.Strategy:
     except:
         tpu_strategy = tf.distribute.get_strategy()
 
-    print("Number of replicas: ", tpu_strategy.num_replicas_in_sync)
+    print(f"Number of replicas: {tpu_strategy.num_replicas_in_sync}")
 
     return tpu_strategy

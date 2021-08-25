@@ -1,7 +1,7 @@
 import sys
 
-sys.path.append("../..")
-sys.path.append("../../morty")
+sys.path.append("../..")  # noqa
+sys.path.append("../../morty")  # noqa
 
 import numpy as np
 from tensorflow import keras

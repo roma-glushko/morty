@@ -1,3 +1,6 @@
+import csv
+from pathlib import Path
+
 from morty.experiment.experiment_manager.experiment_manager import Experiment
 
 try:
@@ -20,6 +23,14 @@ class TrainingTracker(Callback):
 
         self.experiment = experiment
 
-    def on_epoch_end(self, epoch, logs=None):  # pylint:disable=unused-argument
-        # todo: implement metric logging
-        pass
+    def on_epoch_end(self, epoch, logs=None):
+        log_path: Path = self.experiment.get_directory() / "train.csv"
+
+        if not log_path.exists():
+            with open(log_path, "w") as log_file:
+                writer = csv.writer(log_file)
+                writer.writerow(["epoch"] + [*logs.keys()])
+
+        with open(log_path, "a") as log_file:
+            writer = csv.writer(log_file)
+            writer.writerow([epoch] + [*logs.values()])
