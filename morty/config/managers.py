@@ -95,7 +95,7 @@ class NotebookConfigManager:
     NotebookConfigManager is designed to receive all configs from separate dictionary passed as a constructor argument.
     """
 
-    def __init__(self, args):
+    def __init__(self, args: Dict[str, Any]):
         self.args = AttrDict(args)
 
     def __getattr__(self, name):

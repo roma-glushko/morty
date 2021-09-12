@@ -9,8 +9,8 @@ RunFunction = Callable[[Any], Any]
 
 
 def config(
-    path: Optional[str] = None,
-    name: Optional[str] = None,
+    path: str = "configs",
+    name: str = "base_config",
     argument_parser: Optional[ArgumentParser] = None,
 ) -> Callable[[RunFunction], Any]:
     """
@@ -45,8 +45,8 @@ def config(
 def run_func_with_config(
     args_parser: ArgumentParser,
     run_func: RunFunction,
-    config_path: Optional[str],
-    config_name: Optional[str],
+    config_path: str,
+    config_name: str,
 ) -> None:
     args = args_parser.parse_args()
 
