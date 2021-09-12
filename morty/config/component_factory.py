@@ -24,14 +24,13 @@ class ComponentFactory(Iterable[Tuple[str, Any]]):
         scheduler_factory.register(CosineScheduler)
     """
 
-    component_map: Dict[str, Any] = {}
-
     def __init__(self, factory_name: str):
         """
         Args:
             factory_name (str): Name of the current factory (used in exceptions)
         """
         self.factory_name: str = factory_name
+        self.component_map: Dict[str, Any] = {}
 
     def register(self, component_name: str = None, component: Any = None) -> Any:
         """

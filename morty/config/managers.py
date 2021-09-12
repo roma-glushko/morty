@@ -31,13 +31,13 @@ class ConfigManager:
         # todo: console args that were not specified can override configs with None values
 
         # merge configs from all sources
-        args = {
-            **config_args,
-            **console_args,
-            "config_file": os.path.join(config_path, config_name),
-        }
-
-        self.args = AttrDict(args)
+        self.args = AttrDict(
+            {
+                **config_args,
+                **console_args,
+                "config_file": os.path.join(config_path, config_name),
+            }
+        )
 
     @staticmethod
     def _load_config(config_path, config_name):

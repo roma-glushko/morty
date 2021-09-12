@@ -7,7 +7,7 @@ import tensorflow as tf
 # Everything we need to make experiments more reproducible
 
 
-def set_random_seed(seed: int = 42):
+def set_random_seed(seed: int = 42) -> None:
     """
     Fix globally all possible sources of randomness to keep experiment reproducible
     """
