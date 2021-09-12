@@ -75,7 +75,7 @@ class TracebackTracker(BaseTracker):
     def __init__(self, experiment: "Experiment"):
         super().__init__(experiment)
 
-        self.uuid: UUID = uuid.uuid4()
+        self._uuid: UUID = uuid.uuid4()
         self.exception_manager: ExceptionManager = ExceptionManager()
 
     def start(self):
@@ -83,15 +83,15 @@ class TracebackTracker(BaseTracker):
         Log global exceptions to the experiment folder
         """
 
-        def log_exceptions(trace_lines: List[str]):
-            self.experiment.log_exception(trace_lines)
-
-        self.exception_manager.register(self.uuid, log_exceptions)
+        self.exception_manager.register(self._uuid, self._log_exceptions)
         self.exception_manager.activate()
 
     def stop(self):
         """
         Remove all global exception handlers
         """
-        self.exception_manager.unregister(self.uuid)
+        self.exception_manager.unregister(self._uuid)
         self.exception_manager.deactivate()
+
+    def _log_exceptions(self, trace_lines: List[str]):
+        self.experiment.log_exception(trace_lines)
