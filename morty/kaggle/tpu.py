@@ -1,7 +1,7 @@
 import tensorflow as tf
 
-
 # Kaggle TPU related utils
+
 
 def enable_tf_tpu_support() -> tf.distribute.Strategy:
     """

@@ -18,5 +18,5 @@ args = {
 def create_config_file(path: Path, filename: str):
     path.mkdir(parents=True, exist_ok=True)
 
-    with open(path / filename, 'w') as config_file:
+    with open(path / filename, "w") as config_file:
         config_file.writelines(config_content)

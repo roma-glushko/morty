@@ -2,7 +2,7 @@ import json
 import pickle
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Iterable, List, Optional, Type, Dict
+from typing import Any, Dict, Iterable, List, Optional, Type
 
 from funkybob import RandomNameGenerator
 from pydantic import BaseModel

@@ -45,12 +45,15 @@ def get_repository_information(project_path: Path) -> Tuple[GitDetails, Optional
         ):
             current_branch = "Detached HEAD"
 
-    uncommitted_changes = repository.git.diff('HEAD~1')
+    uncommitted_changes = repository.git.diff("HEAD~1")
 
-    return GitDetails(
-        current_commit_hash=current_commit.hexsha,
-        current_branch=current_branch,
-    ), uncommitted_changes
+    return (
+        GitDetails(
+            current_commit_hash=current_commit.hexsha,
+            current_branch=current_branch,
+        ),
+        uncommitted_changes,
+    )
 
 
 class GitTracker(BaseTracker):
@@ -67,7 +70,9 @@ class GitTracker(BaseTracker):
         self.experiment.log_json(repo_info.dict(), filename="git")
 
         if uncommitted_changes:
-            self.experiment.log_text(uncommitted_changes, filename="uncommitted_changes", file_ext="diff")
+            self.experiment.log_text(
+                uncommitted_changes, filename="uncommitted_changes", file_ext="diff"
+            )
 
     def stop(self):
         pass

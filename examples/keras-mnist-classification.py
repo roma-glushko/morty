@@ -62,7 +62,7 @@ def train(configs: ConfigManager) -> None:
         epochs=configs.epochs,
         batch_size=configs.batch_size,
         validation_split=configs.val_dataset_fraction,
-        callbacks=(TensorflowTrainingTracker(experiment), ),
+        callbacks=(TensorflowTrainingTracker(experiment),),
     )
 
     experiment.log_artifact("training_history.pkl", training_history)
