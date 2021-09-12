@@ -134,6 +134,7 @@ class Experiment:
 
         return active_trackers
 
-    def _deactivate_trackers(self, active_trackers: List[BaseTracker]):
+    @staticmethod
+    def _deactivate_trackers(active_trackers: List[BaseTracker]):
         for tracker in active_trackers:
             tracker.stop()

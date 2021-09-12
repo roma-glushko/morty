@@ -59,6 +59,7 @@ class GitTracker(BaseTracker):
         repository_info = get_repository_information(__file__)
 
         self.experiment.log_json(repository_info.dict(), filename="git")
+        # todo: logs uncommitted changes as a patch file
 
     def stop(self):
         pass
