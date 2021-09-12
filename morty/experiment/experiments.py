@@ -1,13 +1,18 @@
 import pickle
 from datetime import datetime
 from pathlib import Path
-from typing import Any, List, Optional
+from typing import Any, Iterable, List, Optional, Type
 
 from funkybob import RandomNameGenerator
 from pydantic import BaseModel
 
+from morty.experiment.trackers import BaseTracker
+
 
 def generate_experiment_id() -> str:
+    """
+    Generates unique experiment ID
+    """
     readable_id: str = next(iter(RandomNameGenerator()))
     timestamp: str = datetime.now().strftime("%Y%m%d_%H%M%S")
 
@@ -32,16 +37,21 @@ class Experiment:
     def __init__(
         self,
         root_directory: str,
+        experiment_trackers: Iterable[Type[BaseTracker]] = (),
         experiment_context: Optional[ExperimentContext] = None,
     ):
         self.root_directory: Path = Path(root_directory)
         self.experiment_id: str = generate_experiment_id()
         self.experiment_directory: Path = Path(self.experiment_id)
+        self.experiment_trackers = experiment_trackers
+        self.active_experiment_trackers: List[BaseTracker] = []
 
-        if experiment_context:
-            # loading existing experiment
-            self.experiment_id = experiment_context.id
-            self.experiment_directory = Path(experiment_context.directory)
+        if not experiment_context:
+            return
+
+        # loading existing experiment
+        self.experiment_id = experiment_context.id
+        self.experiment_directory = Path(experiment_context.directory)
 
     def get_directory(self) -> Path:
         """
@@ -66,24 +76,55 @@ class Experiment:
         """
         Log configs as a text file
         """
-        config_path: Path = self.get_file_path("config.{}".format(file_ext))
+        config_path: Path = self.get_file_path(f"config.{file_ext}")
 
         with open(config_path, "w") as config_file:
             config_file.writelines(str(configs))
 
-    def log_exception(self, trace_lines: List[str]):
+    def log_exception(self, trace_lines: List[str], file_ext: str = "log"):
         """
         Log exceptions to a text file
         """
-        exceptions_path: Path = self.get_file_path("exceptions.log")
+        exceptions_path: Path = self.get_file_path(f"exceptions.{file_ext}")
 
         with open(exceptions_path, "a") as exceptions_file:
             exceptions_file.writelines(trace_lines)
 
+    def log_output(self, lines: Iterable[str], file_ext: str = "log"):
+        output_path: Path = self.get_file_path(f"output.{file_ext}")
+
+        with open(output_path, "a") as output_file:
+            output_file.writelines(lines)
+
     def start(self):
+        """
+        Starts experiment tracking
+        """
         self.get_directory().mkdir(parents=True, exist_ok=True)
 
-        # todo: run all standard trackers
+        self.active_experiment_trackers = self._activate_trackers(
+            self.experiment_trackers
+        )
 
     def finish(self):
-        pass
+        """
+        Stops experiment tracking
+        """
+        self._deactivate_trackers(self.active_experiment_trackers)
+
+    def _activate_trackers(
+        self, experiment_trackers: Iterable[Type[BaseTracker]]
+    ) -> List[BaseTracker]:
+        active_trackers: List[BaseTracker] = []
+
+        for tracker_class in experiment_trackers:
+            tracker = tracker_class(self)
+
+            tracker.start()
+            active_trackers.append(tracker)
+
+        return active_trackers
+
+    def _deactivate_trackers(self, active_trackers: List[BaseTracker]):
+        for tracker in active_trackers:
+            tracker.stop()

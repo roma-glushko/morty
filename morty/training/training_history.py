@@ -1,10 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-"""
-
-"""
-
 
 def build_table(headers, rows, digits=4):
     """

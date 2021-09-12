@@ -1,10 +1,12 @@
 import abc
+from typing import TYPE_CHECKING
 
-from morty.experiment import Experiment
+if TYPE_CHECKING:
+    from morty.experiment.experiments import Experiment
 
 
 class BaseTracker(abc.ABC):
-    def __init__(self, experiment: Experiment):
+    def __init__(self, experiment: "Experiment"):
         self.experiment = experiment
 
     @abc.abstractmethod

@@ -4,10 +4,8 @@ import random
 import numpy as np
 import tensorflow as tf
 
-"""
-Everything we need to make experiments more reproducible
-"""
 
+# Everything we need to make experiments more reproducible
 
 def set_random_seed(seed: int = 42):
     """
