@@ -39,13 +39,14 @@ class TracebackTracker(Tracker):
     Tracks unhandled exceptions and log them to experiment directory
     """
 
-    def __init__(self):
+    def __init__(self, experiment: Experiment):
+        self.experiment = experiment
         self.uuid: UUID = uuid.uuid4()
         self.exception_handler = ExceptionHandler()
 
-    def start(self, experiment: Experiment):
+    def start(self):
         def log_exceptions(trace_lines: List[str]):
-            experiment.log_exception(trace_lines)
+            self.experiment.log_exception(trace_lines)
 
         self.exception_handler.register(self.uuid, log_exceptions)
 

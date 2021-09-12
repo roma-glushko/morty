@@ -8,8 +8,10 @@ class StdoutTracker(Tracker):
     - standard output
     - error output
     """
+    def __init__(self, experiment: Experiment):
+        self.experiment = experiment
 
-    def start(self, experiment: Experiment):
+    def start(self):
         pass
 
     def stop(self):

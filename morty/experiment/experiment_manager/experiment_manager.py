@@ -1,10 +1,17 @@
 import pickle
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any, Optional, List
 
 from funkybob import RandomNameGenerator
 from pydantic import BaseModel
+
+
+def generate_experiment_id() -> str:
+    readable_id: str = next(iter(RandomNameGenerator()))
+    timestamp: str = datetime.now().strftime("%Y%m%d_%H%M%S")
+
+    return f"{timestamp}_{readable_id}"
 
 
 class ExperimentContext(BaseModel):
@@ -36,7 +43,7 @@ class Experiment:
 
         if not experiment_context:
             # creating a new experiment
-            self.experiment_id: str = self.generate_experiment_id()
+            self.experiment_id: str = generate_experiment_id()
             self.experiment_directory: Path = Path(self.experiment_id)
 
     def get_directory(self) -> Path:
@@ -67,6 +74,15 @@ class Experiment:
         with open(config_path, "w") as config_file:
             config_file.writelines(str(configs))
 
+    def log_exception(self, trace_lines: List[str]):
+        """
+        Log exceptions to a text file
+        """
+        exceptions_path: Path = self.get_file_path("exceptions.log")
+
+        with open(exceptions_path, "a") as exceptions_file:
+            exceptions_file.writelines(trace_lines)
+
     def start(self):
         self.get_directory().mkdir(parents=True, exist_ok=True)
 
@@ -74,13 +90,6 @@ class Experiment:
 
     def finish(self):
         pass
-
-    @staticmethod
-    def generate_experiment_id() -> str:
-        readable_id: str = next(iter(RandomNameGenerator()))
-        timestamp: str = datetime.now().strftime("%Y%m%d_%H%M%S")
-
-        return f"{timestamp}_{readable_id}"
 
 
 class ExperimentManager:
