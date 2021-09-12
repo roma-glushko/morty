@@ -9,7 +9,7 @@ from tensorflow.keras import layers  # noqa
 
 from morty.config import ConfigManager, config  # noqa
 from morty.experiment import Experiment, ExperimentManager  # noqa
-from morty.experiment.trainers.tensorflow import TrainingTracker  # noqa
+from morty.experiment.trainers import TensorflowTrainingTracker  # noqa
 
 
 @config(path="configs", name="basic_config")
@@ -51,7 +51,7 @@ def train(configs: ConfigManager) -> None:
     model.compile(
         loss="categorical_crossentropy",
         optimizer="adam",
-        metrics=["accuracy"],
+        metrics=("accuracy",),
     )
 
     model.summary()
@@ -62,7 +62,7 @@ def train(configs: ConfigManager) -> None:
         epochs=configs.epochs,
         batch_size=configs.batch_size,
         validation_split=configs.val_dataset_fraction,
-        callbacks=[TrainingTracker(experiment)],
+        callbacks=(TensorflowTrainingTracker(experiment), ),
     )
 
     experiment.log_artifact("training_history.pkl", training_history)
