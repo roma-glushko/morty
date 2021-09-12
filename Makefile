@@ -15,3 +15,6 @@ lint:
 
 test:
 	pytest ./tests
+
+clean-exps:
+	rm -rf ./examples/experiments/*

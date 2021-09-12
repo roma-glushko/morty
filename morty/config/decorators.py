@@ -20,10 +20,10 @@ def config(
 
     def decorate_main_func(run_func: RunFunction) -> Callable[[], None]:
         @functools.wraps(run_func)
-        def decorated_main(config: Optional[ConfigManager] = None) -> Any:
-            if config is not None:
+        def decorated_main(configs: Optional[ConfigManager] = None) -> Any:
+            if configs is not None:
                 # todo: document this case or remove it
-                return run_func(config)
+                return run_func(configs)
 
             arg_parser = argument_parser
 
@@ -56,6 +56,6 @@ def run_func_with_config(
     if args.config_path is not None:
         config_path = args.config_path
 
-    config = ConfigManager(config_path, config_name, console_args=args.__dict__)
+    configs = ConfigManager(config_path, config_name, console_args=args.__dict__)
 
-    run_func(config)
+    run_func(configs)

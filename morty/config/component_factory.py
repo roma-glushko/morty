@@ -26,7 +26,7 @@ class ComponentFactory(Iterable[Tuple[str, Any]]):
 
     component_map: Dict[str, Any] = {}
 
-    def __init__(self, factory_name: str) -> None:
+    def __init__(self, factory_name: str):
         """
         Args:
             factory_name (str): Name of the current factory (used in exceptions)
@@ -81,11 +81,11 @@ class ComponentFactory(Iterable[Tuple[str, Any]]):
         """Render component map as a table"""
         table = tabulate(
             self.component_map.items(),
-            headers=["Names", "Components"],
+            headers=("Names", "Components"),
             tablefmt="fancy_grid",
         )
 
-        return f"Factory of {self.factory_name}:\n" + table
+        return f"Factory of {self.factory_name}:\n{table}"
 
     def __iter__(self) -> Iterator[Tuple[str, Any]]:
         """Iterate through component map"""

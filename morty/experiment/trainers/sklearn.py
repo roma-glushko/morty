@@ -14,7 +14,7 @@ except ImportError:
         raise ModuleNotFoundError(msg)
 
 
-class TrainingTracker(Callback):
+class SklearnTrainingTracker(Callback):
     def __init__(self, experiment: Experiment):
         super().__init__()
 

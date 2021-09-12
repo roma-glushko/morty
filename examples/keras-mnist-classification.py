@@ -9,12 +9,12 @@ from tensorflow.keras import layers  # noqa
 
 from morty.config import ConfigManager, config  # noqa
 from morty.experiment import Experiment, ExperimentManager  # noqa
-from morty.experiment.trainers.tensorflow import TrainingTracker  # noqa
+from morty.experiment.trainers import TensorflowTrainingTracker  # noqa
 
 
 @config(path="configs", name="basic_config")
-def train(config: ConfigManager) -> None:
-    experiment: Experiment = ExperimentManager(configs=config).create()
+def train(configs: ConfigManager) -> None:
+    experiment: Experiment = ExperimentManager(configs=configs).create()
 
     # the data, split between train and test sets
     (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
@@ -32,26 +32,26 @@ def train(config: ConfigManager) -> None:
     print(f"{x_test.shape[0]} test samples")
 
     # convert class vectors to binary class matrices
-    y_train = keras.utils.to_categorical(y_train, config.num_classes)
-    y_test = keras.utils.to_categorical(y_test, config.num_classes)
+    y_train = keras.utils.to_categorical(y_train, configs.num_classes)
+    y_test = keras.utils.to_categorical(y_test, configs.num_classes)
 
     model = keras.Sequential(
         [
-            keras.Input(shape=config.image_shape),
+            keras.Input(shape=configs.image_shape),
             layers.Conv2D(32, kernel_size=(3, 3), activation="relu"),
             layers.MaxPooling2D(pool_size=(2, 2)),
             layers.Conv2D(64, kernel_size=(3, 3), activation="relu"),
             layers.MaxPooling2D(pool_size=(2, 2)),
             layers.Flatten(),
             layers.Dropout(0.5),
-            layers.Dense(config.num_classes, activation="softmax"),
+            layers.Dense(configs.num_classes, activation="softmax"),
         ]
     )
 
     model.compile(
         loss="categorical_crossentropy",
         optimizer="adam",
-        metrics=["accuracy"],
+        metrics=("accuracy",),
     )
 
     model.summary()
@@ -59,10 +59,10 @@ def train(config: ConfigManager) -> None:
     training_history = model.fit(
         x_train,
         y_train,
-        epochs=config.epochs,
-        batch_size=config.batch_size,
-        validation_split=config.val_dataset_fraction,
-        callbacks=[TrainingTracker(experiment)],
+        epochs=configs.epochs,
+        batch_size=configs.batch_size,
+        validation_split=configs.val_dataset_fraction,
+        callbacks=(TensorflowTrainingTracker(experiment), ),
     )
 
     experiment.log_artifact("training_history.pkl", training_history)

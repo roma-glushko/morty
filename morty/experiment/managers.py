@@ -18,7 +18,6 @@ class ExperimentManager:
         experiment_trackers: Iterable[Type["BaseTracker"]] = DEFAULT_TRACKER_LIST,
         configs: Optional[Any] = None,
     ):
-        """ """
         self.root_directory = root_dir
         self.experiment_trackers = experiment_trackers
         self.configs = configs

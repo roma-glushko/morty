@@ -1,1 +1,4 @@
 experiments
+.pytest_cache
+
+*.pyc

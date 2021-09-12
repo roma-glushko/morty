@@ -47,7 +47,7 @@ def plot_training_history(
         ax = axes[idx]
 
         train_metric = training_history[metric]
-        val_metric = training_history["val_" + metric]
+        val_metric = training_history[f"val_{metric}"]
 
         ax.set_title(metric)
         ax.set_xlabel("Epoch")
@@ -64,12 +64,12 @@ def plot_training_history(
 
     for metric in metrics:
         rows.append(
-            [
+            (
                 metric,
                 training_history[metric][best_epoch],
-                training_history["val_" + metric][best_epoch],
+                training_history[f"val_{metric}"][best_epoch],
                 best_epoch,
-            ]
+            )
         )
 
     return build_table(("Train", "Validation", "Best Epoch"), rows)

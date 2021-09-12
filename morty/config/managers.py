@@ -56,7 +56,8 @@ class ConfigManager:
 
         return config_module.args
 
-    def _validate_config_path(self, config_path: Optional[str]) -> None:
+    @staticmethod
+    def _validate_config_path(config_path: Optional[str]) -> None:
         if config_path is None:
             return
 
