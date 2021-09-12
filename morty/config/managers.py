@@ -3,6 +3,7 @@ import json
 import os
 import sys
 from os.path import splitext
+from pathlib import Path
 from textwrap import dedent
 from typing import Any, Dict, Optional
 
@@ -46,8 +47,8 @@ class ConfigManager:
 
         if not hasattr(config_module, "args"):
             msg = dedent(
-                """\
-            config_name should have args dictionary declared
+                f"""\
+            '{Path(config_path) / config_name}' config file should have 'args' dictionary declared
             """
             )
 
@@ -86,7 +87,7 @@ class ConfigManager:
         return getattr(self.args, name)
 
     def __repr__(self):
-        return "ConfigManager({})".format(json.dumps(self.args, indent=2, default=str))
+        return f"ConfigManager({json.dumps(self.args, indent=2, default=str)})"
 
 
 class NotebookConfigManager:
@@ -101,4 +102,4 @@ class NotebookConfigManager:
         return getattr(self.args, name)
 
     def __repr__(self):
-        return "NotebookConfigManager({})".format(json.dumps(self.args, indent=2))
+        return f"NotebookConfigManager({json.dumps(self.args, indent=2)})"

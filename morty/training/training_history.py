@@ -76,4 +76,4 @@ def plot_training_history(
             ]
         )
 
-    return build_table(["Train", "Validation", "Best Epoch"], rows)
+    return build_table(("Train", "Validation", "Best Epoch"), rows)
