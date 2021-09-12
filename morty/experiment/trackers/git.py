@@ -3,8 +3,7 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
-from morty.experiment import Experiment
-from morty.experiment.trackers.base import Tracker
+from morty.experiment.trackers.base import BaseTracker
 
 
 class GitDetails(BaseModel):
@@ -48,16 +47,13 @@ def get_repository_information(project_path: Path) -> GitDetails:
     )
 
 
-class GitTracker(Tracker):
+class GitTracker(BaseTracker):
     """
     Track project repository information:
     - current branch
     - current commit hash
     - save untracked changes as a patch
     """
-
-    def __init__(self, experiment: Experiment):
-        self.experiment = experiment
 
     def start(self):
         pass

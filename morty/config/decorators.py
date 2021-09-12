@@ -2,18 +2,19 @@ import functools
 from argparse import ArgumentParser
 from typing import Any, Callable, Optional
 
-from .arguments_runner import get_arg_parser
-from .config_manager import ConfigManager
+from morty.config.arguments_runner import get_arg_parser
+from morty.config.managers import ConfigManager
 
 RunFunction = Callable[[Any], Any]
 
 
-def main(
-    config_path: Optional[str] = None,
-    config_name: Optional[str] = None,
+def config(
+    path: Optional[str] = None,
+    name: Optional[str] = None,
     argument_parser: Optional[ArgumentParser] = None,
 ) -> Callable[[RunFunction], Any]:
     """
+    Decorates main() function in order to load configs from py file
     @see https://github.com/facebookresearch/hydra/blob/master/hydra/main.py
     """
 
@@ -32,8 +33,8 @@ def main(
             run_func_with_config(
                 args_parser=arg_parser,
                 run_func=run_func,
-                config_path=config_path,
-                config_name=config_name,
+                config_path=path,
+                config_name=name,
             )
 
         return decorated_main

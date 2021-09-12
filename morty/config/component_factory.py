@@ -68,7 +68,9 @@ class ComponentFactory(Iterable[Tuple[str, Any]]):
         component = self.component_map.get(component_name)
 
         if component is None:
-            raise KeyError(f"No object named '{component}' found in '{self.factory_name}' registry!")
+            raise KeyError(
+                f"No object named '{component}' found in '{self.factory_name}' registry!"
+            )
 
         return component
 

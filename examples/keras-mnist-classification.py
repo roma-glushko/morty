@@ -7,12 +7,12 @@ import numpy as np  # noqa
 from tensorflow import keras  # noqa
 from tensorflow.keras import layers  # noqa
 
-from morty.config import ConfigManager, main  # noqa
-from morty.experiment.trainers import Experiment, ExperimentManager  # noqa
+from morty.config import ConfigManager, config  # noqa
+from morty.experiment import Experiment, ExperimentManager  # noqa
 from morty.experiment.trainers.tensorflow import TrainingTracker  # noqa
 
 
-@main(config_path="configs", config_name="basic_config")
+@config(path="configs", name="basic_config")
 def train(config: ConfigManager) -> None:
     experiment: Experiment = ExperimentManager(configs=config).create()
 

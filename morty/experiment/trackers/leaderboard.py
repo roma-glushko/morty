@@ -1,14 +1,10 @@
-from morty.experiment import Experiment
-from morty.experiment.trackers import Tracker
+from morty.experiment.trackers import BaseTracker
 
 
-class LeaderboardTracker(Tracker):
+class LeaderboardTracker(BaseTracker):
     """
     Maintain a global table of the best experiments
     """
-
-    def __init__(self, experiment: Experiment):
-        self.experiment = experiment
 
     def start(self):
         pass

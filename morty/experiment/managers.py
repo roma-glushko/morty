@@ -5,7 +5,7 @@ from morty.experiment import Experiment
 
 class ExperimentManager:
     """
-    ExperimentManager performs high level operations like experiment creation or loading
+    Performs high level operations like experiment creation or loading
     """
 
     def __init__(self, root_dir: str = "./experiments", configs: Optional[Any] = None):

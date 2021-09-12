@@ -1,12 +1,12 @@
-from .arguments_runner import get_arg_parser
-from .component_factory import ComponentFactory
-from .config_manager import ConfigManager, NotebookConfigManager
-from .main_decorator import main
+from morty.config.arguments_runner import get_arg_parser
+from morty.config.component_factory import ComponentFactory
+from morty.config.decorators import config
+from morty.config.managers import ConfigManager, NotebookConfigManager
 
 __all__ = [
     "get_arg_parser",
     "ComponentFactory",
     "ConfigManager",
     "NotebookConfigManager",
-    "main",
+    "config",
 ]
