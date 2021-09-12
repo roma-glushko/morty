@@ -16,7 +16,7 @@ def enable_tf_tpu_support() -> tf.distribute.Strategy:
         tf.config.experimental_connect_to_cluster(tpu_cluster)
         tf.tpu.experimental.initialize_tpu_system(tpu_cluster)
         tpu_strategy = tf.distribute.experimental.TPUStrategy(tpu_cluster)
-    except:
+    except:  # noqa
         tpu_strategy = tf.distribute.get_strategy()
 
     print(f"Number of replicas: {tpu_strategy.num_replicas_in_sync}")

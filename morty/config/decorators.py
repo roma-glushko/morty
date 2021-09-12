@@ -1,22 +1,20 @@
 import functools
-import os
 from argparse import ArgumentParser
-from os.path import splitext
-from textwrap import dedent
 from typing import Any, Callable, Optional
 
-from .arguments_runner import get_arg_parser
-from .config_manager import ConfigManager
+from morty.config.args_parser import get_arg_parser
+from morty.config.managers import ConfigManager
 
 RunFunction = Callable[[Any], Any]
 
 
-def main(
-    config_path: Optional[str] = None,
-    config_name: Optional[str] = None,
+def config(
+    path: Optional[str] = None,
+    name: Optional[str] = None,
     argument_parser: Optional[ArgumentParser] = None,
 ) -> Callable[[RunFunction], Any]:
     """
+    Decorates main() function in order to load configs from py file
     @see https://github.com/facebookresearch/hydra/blob/master/hydra/main.py
     """
 
@@ -35,40 +33,13 @@ def main(
             run_func_with_config(
                 args_parser=arg_parser,
                 run_func=run_func,
-                config_path=config_path,
-                config_name=config_name,
+                config_path=path,
+                config_name=name,
             )
 
         return decorated_main
 
     return decorate_main_func
-
-
-def validate_config_path(config_path: Optional[str]) -> None:
-    if config_path is None:
-        return
-
-    split_file = splitext(config_path)
-
-    if split_file[1] == ".py":
-        msg = dedent(
-            """\
-        Using config_path to specify the config name is not supported, specify the config name via config_name.
-        """
-        )
-
-        raise ValueError(msg)
-
-    abs_config_path = os.path.abspath(config_path)
-
-    if not os.path.isdir(abs_config_path):
-        msg = dedent(
-            """\
-        config_path should be an accessible directory, make sure provided path is correct.
-        """
-        )
-
-        raise ValueError(msg)
 
 
 def run_func_with_config(
@@ -84,8 +55,6 @@ def run_func_with_config(
 
     if args.config_path is not None:
         config_path = args.config_path
-
-    validate_config_path(config_path)
 
     config = ConfigManager(config_path, config_name, console_args=args.__dict__)
 

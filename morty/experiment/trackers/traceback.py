@@ -4,8 +4,8 @@ import uuid
 from typing import Callable, List
 from uuid import UUID
 
-from morty.experiment.experiment_manager.experiment_manager import Experiment
-from morty.experiment.experiment_manager.trackers.base import Tracker
+from morty.experiment.trackers import BaseTracker
+from morty.experiment.trainers import Experiment
 
 ExceptionHandler = Callable[[List[str]], None]
 
@@ -34,20 +34,22 @@ class ExceptionManager:
         pass
 
 
-class TracebackTracker(Tracker):
+class TracebackTracker(BaseTracker):
     """
     Tracks unhandled exceptions and log them to experiment directory
     """
 
-    def __init__(self):
+    def __init__(self, experiment: Experiment):
+        super().__init__(experiment)
+
         self.uuid: UUID = uuid.uuid4()
-        self.exception_handler = ExceptionHandler()
+        self.exception_manager: ExceptionManager = ExceptionManager()
 
-    def start(self, experiment: Experiment):
+    def start(self):
         def log_exceptions(trace_lines: List[str]):
-            experiment.log_exception(trace_lines)
+            self.experiment.log_exception(trace_lines)
 
-        self.exception_handler.register(self.uuid, log_exceptions)
+        self.exception_manager.register(self.uuid, log_exceptions)
 
     def stop(self):
-        self.exception_handler.unregister(self.uuid)
+        self.exception_manager.unregister(self.uuid)

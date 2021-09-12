@@ -1,4 +1,4 @@
-from morty.experiment.experiment_manager.experiment_manager import Experiment
+from morty.experiment import Experiment
 
 try:
     from tensorflow.keras.callbacks import Callback

@@ -27,8 +27,8 @@ from tensorflow import keras
 from tensorflow.keras import layers
 
 from morty.config import main, ConfigManager
-from morty.experiment.experiment_manager import ExperimentManager, Experiment
-from morty.experiment.experiment_manager.tensorflow import TrainingTracker
+from morty.experiment.trainers import ExperimentManager, Experiment
+from morty.experiment.trainers.tensorflow import TrainingTracker
 
 
 @main(config_path='configs', config_name='basic_config')
