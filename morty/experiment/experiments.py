@@ -73,29 +73,26 @@ class Experiment:
         artifact_path: Path = self.get_file_path(file_name)
         pickle.dump(artifact, open(artifact_path, "wb"))
 
+    def log_text(self, lines: Iterable[str], filename: str, file_ext: str = "txt"):
+        output_path: Path = self.get_file_path(f"{filename}.{file_ext}")
+
+        with open(output_path, "a") as output_file:
+            output_file.writelines(lines)
+
     def log_configs(self, configs: Any, file_ext: str = "txt"):
         """
         Log configs as a text file
         """
-        config_path: Path = self.get_file_path(f"config.{file_ext}")
-
-        with open(config_path, "w") as config_file:
-            config_file.writelines(str(configs))
+        self.log_text(str(configs), "config", file_ext=file_ext)
 
     def log_exception(self, trace_lines: List[str], file_ext: str = "log"):
         """
         Log exceptions to a text file
         """
-        exceptions_path: Path = self.get_file_path(f"exceptions.{file_ext}")
-
-        with open(exceptions_path, "a") as exceptions_file:
-            exceptions_file.writelines(trace_lines)
+        self.log_text(trace_lines, "exceptions", file_ext=file_ext)
 
     def log_output(self, lines: Iterable[str], file_ext: str = "log"):
-        output_path: Path = self.get_file_path(f"output.{file_ext}")
-
-        with open(output_path, "a") as output_file:
-            output_file.writelines(lines)
+        self.log_text(lines, "output", file_ext=file_ext)
 
     def log_json(self, data: Dict, filename: str, file_ext: str = "json"):
         """
