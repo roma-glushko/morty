@@ -3,10 +3,10 @@ from morty.config.component_factory import ComponentFactory
 from morty.config.decorators import config
 from morty.config.managers import ConfigManager, NotebookConfigManager
 
-__all__ = [
-    "get_arg_parser",
+__all__ = (
     "ComponentFactory",
     "ConfigManager",
     "NotebookConfigManager",
     "config",
-]
+    "get_arg_parser",
+)

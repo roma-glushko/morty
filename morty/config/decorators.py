@@ -2,8 +2,8 @@ import functools
 from argparse import ArgumentParser
 from typing import Any, Callable, Optional
 
-from morty.config.arguments_runner import get_arg_parser
 from morty.config.managers import ConfigManager
+from morty.config.args_parser import get_arg_parser
 
 RunFunction = Callable[[Any], Any]
 
