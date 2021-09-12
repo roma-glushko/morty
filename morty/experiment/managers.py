@@ -24,7 +24,7 @@ class ExperimentManager:
 
     def create(self) -> Experiment:
         """
-        Create a new experiment
+        Create a new experiment and start all experiment trackers
         """
         experiment: Experiment = Experiment(
             self.root_directory,

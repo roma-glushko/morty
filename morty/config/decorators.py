@@ -48,6 +48,9 @@ def run_func_with_config(
     config_path: str,
     config_name: str,
 ) -> None:
+    """
+    Run main() function with config manager instance loaded from specified place
+    """
     args = args_parser.parse_args()
 
     if args.config_name is not None:

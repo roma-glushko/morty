@@ -94,4 +94,7 @@ class TracebackTracker(BaseTracker):
         self.exception_manager.deactivate()
 
     def _log_exceptions(self, trace_lines: List[str]):
+        """
+        Log critical exceptions
+        """
         self.experiment.log_exception(trace_lines)

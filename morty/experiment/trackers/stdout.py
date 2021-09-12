@@ -17,10 +17,16 @@ class StreamLogger:
         self.stream = stream
 
     def write(self, line: str) -> int:
+        """
+        Logs a string that is got to the stream
+        """
         self.experiment.log_output([line])
         return self.stream.write(line)
 
     def writelines(self, lines: List[str]) -> None:
+        """
+        Logs all information that is got to the stream
+        """
         self.experiment.log_output(lines)
         return self.stream.writelines(lines)
 

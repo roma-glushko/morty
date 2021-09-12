@@ -18,6 +18,10 @@ except ImportError:
 
 
 class TensorflowTrainingTracker(Callback):
+    """
+    Trainer Tracker for Tensorflow projects
+    """
+
     def __init__(self, experiment: Experiment, log_file="train.csv"):
         super().__init__()
 

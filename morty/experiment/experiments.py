@@ -74,6 +74,9 @@ class Experiment:
         pickle.dump(artifact, open(artifact_path, "wb"))
 
     def log_text(self, lines: Iterable[str], filename: str, file_ext: str = "txt"):
+        """
+        Log strings as a plain text
+        """
         output_path: Path = self.get_file_path(f"{filename}.{file_ext}")
 
         with open(output_path, "a") as output_file:
@@ -92,6 +95,9 @@ class Experiment:
         self.log_text(trace_lines, "exceptions", file_ext=file_ext)
 
     def log_output(self, lines: Iterable[str], file_ext: str = "log"):
+        """
+        Log text as a std output or std error
+        """
         self.log_text(lines, "output", file_ext=file_ext)
 
     def log_json(self, data: Dict, filename: str, file_ext: str = "json"):
@@ -121,6 +127,9 @@ class Experiment:
     def _activate_trackers(
         self, experiment_trackers: Iterable[Type[BaseTracker]]
     ) -> List[BaseTracker]:
+        """
+        Activates all trackers to log all kind of information about experiment
+        """
         active_trackers: List[BaseTracker] = []
 
         for tracker_class in experiment_trackers:
@@ -133,5 +142,8 @@ class Experiment:
 
     @staticmethod
     def _deactivate_trackers(active_trackers: List[BaseTracker]):
+        """
+        Stop active trackers when experiment is over
+        """
         for tracker in active_trackers:
             tracker.stop()
