@@ -56,7 +56,9 @@ class GitTracker(BaseTracker):
     """
 
     def start(self):
-        pass
+        repository_info = get_repository_information(__file__)
+
+        self.experiment.log_json(repository_info.dict(), filename="git")
 
     def stop(self):
         pass

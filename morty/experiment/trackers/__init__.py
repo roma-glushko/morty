@@ -7,6 +7,7 @@ from morty.experiment.trackers.stdout import StdoutTracker
 from morty.experiment.trackers.traceback import TracebackTracker
 
 DEFAULT_TRACKER_LIST: Tuple[Type[BaseTracker], ...] = (
+    GitTracker,
     StdoutTracker,
     TracebackTracker,
 )

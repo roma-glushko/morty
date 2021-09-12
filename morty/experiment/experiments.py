@@ -1,7 +1,8 @@
+import json
 import pickle
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Iterable, List, Optional, Type
+from typing import Any, Iterable, List, Optional, Type, Dict
 
 from funkybob import RandomNameGenerator
 from pydantic import BaseModel
@@ -95,6 +96,14 @@ class Experiment:
 
         with open(output_path, "a") as output_file:
             output_file.writelines(lines)
+
+    def log_json(self, data: Dict, filename: str, file_ext: str = "json"):
+        """
+        Save data as JSON file
+        """
+        output_path: Path = self.get_file_path(f"{filename}.{file_ext}")
+
+        json.dump(data, open(output_path, "w"), indent=4, sort_keys=True)
 
     def start(self):
         """
