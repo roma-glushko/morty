@@ -11,7 +11,7 @@ Everything we need to make experiments more reproducible
 
 def set_random_seed(seed: int = 42):
     """
-    Globally fix all possible sources of randomness to keep experiment reproducible
+    Fix globally all possible sources of randomness to keep experiment reproducible
     """
     os.environ["PYTHONHASHSEED"] = str(seed)
     os.environ["TF_DETERMINISTIC_OPS"] = "1"

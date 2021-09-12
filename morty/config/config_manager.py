@@ -2,6 +2,7 @@ import importlib
 import json
 import os
 import sys
+from os.path import splitext
 from textwrap import dedent
 from typing import Any, Dict, Optional
 
@@ -19,7 +20,9 @@ class ConfigManager:
         config_name: str,
         console_args: Optional[Dict[str, Any]] = None,
     ):
-        config_args = self.load_config(config_path, config_name)
+        self._validate_config_path(config_path)
+
+        config_args = self._load_config(config_path, config_name)
 
         if console_args is None:
             console_args = {}
@@ -36,7 +39,7 @@ class ConfigManager:
         self.args = AttrDict(args)
 
     @staticmethod
-    def load_config(config_path, config_name):
+    def _load_config(config_path, config_name):
         sys.path.append(config_path)
 
         config_module = importlib.import_module(config_name)
@@ -51,6 +54,33 @@ class ConfigManager:
             raise RuntimeError(msg)
 
         return config_module.args
+
+    def _validate_config_path(self, config_path: Optional[str]) -> None:
+        if config_path is None:
+            return
+
+        split_file = splitext(config_path)
+
+        if split_file[1] == ".py":
+            # todo: process this case instead of warning
+            msg = dedent(
+                """\
+            Using config_path to specify the config name is not supported, specify the config name via config_name.
+            """
+            )
+
+            raise ValueError(msg)
+
+        abs_config_path = os.path.abspath(config_path)
+
+        if not os.path.isdir(abs_config_path):
+            msg = dedent(
+                """\
+            config_path should be an accessible directory, make sure provided path is correct.
+            """
+            )
+
+            raise ValueError(msg)
 
     def __getattr__(self, name):
         return getattr(self.args, name)

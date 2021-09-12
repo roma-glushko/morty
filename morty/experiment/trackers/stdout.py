@@ -1,5 +1,5 @@
-from morty.experiment.experiment_manager.experiment_manager import Experiment
-from morty.experiment.experiment_manager.trackers.base import Tracker
+from morty.experiment import Experiment
+from morty.experiment.trackers import Tracker
 
 
 class StdoutTracker(Tracker):
@@ -8,6 +8,7 @@ class StdoutTracker(Tracker):
     - standard output
     - error output
     """
+
     def __init__(self, experiment: Experiment):
         self.experiment = experiment
 

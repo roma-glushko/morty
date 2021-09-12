@@ -1,7 +1,7 @@
 import pickle
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Optional, List
+from typing import Any, List, Optional
 
 from funkybob import RandomNameGenerator
 from pydantic import BaseModel
@@ -35,16 +35,13 @@ class Experiment:
         experiment_context: Optional[ExperimentContext] = None,
     ):
         self.root_directory: Path = Path(root_directory)
+        self.experiment_id: str = generate_experiment_id()
+        self.experiment_directory: Path = Path(self.experiment_id)
 
         if experiment_context:
             # loading existing experiment
-            self.experiment_id: str = experiment_context.id
-            self.experiment_directory: Path = Path(experiment_context.directory)
-
-        if not experiment_context:
-            # creating a new experiment
-            self.experiment_id: str = generate_experiment_id()
-            self.experiment_directory: Path = Path(self.experiment_id)
+            self.experiment_id = experiment_context.id
+            self.experiment_directory = Path(experiment_context.directory)
 
     def get_directory(self) -> Path:
         """
@@ -90,27 +87,3 @@ class Experiment:
 
     def finish(self):
         pass
-
-
-class ExperimentManager:
-    """
-    ExperimentManager performs high level operations like experiment creation or loading
-    """
-
-    def __init__(self, root_dir: str = "./experiments", configs: Optional[Any] = None):
-        """ """
-        self.root_directory = root_dir
-        self.configs = configs
-
-    def create(self) -> Experiment:
-        """
-        Create a new experiment
-        """
-        experiment: Experiment = Experiment(self.root_directory)
-
-        experiment.start()
-
-        if self.configs:
-            experiment.log_configs(self.configs)
-
-        return experiment

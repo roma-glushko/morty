@@ -4,8 +4,8 @@ import uuid
 from typing import Callable, List
 from uuid import UUID
 
-from morty.experiment.experiment_manager.experiment_manager import Experiment
-from morty.experiment.experiment_manager.trackers.base import Tracker
+from morty.experiment.trackers import Tracker
+from morty.experiment.trainers import Experiment
 
 ExceptionHandler = Callable[[List[str]], None]
 

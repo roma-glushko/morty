@@ -59,9 +59,7 @@ class ComponentFactory(Iterable[Tuple[str, Any]]):
     def register_component(self, component_name: str, component: Any) -> None:
         assert (
             component_name not in self.component_map
-        ), "An object named '{}' was already registered in '{}' factory!".format(
-            component_name, self.factory_name
-        )
+        ), f"An object named '{component_name}' was already registered in '{self.factory_name}' factory!"
 
         self.component_map[component_name] = component
 
@@ -70,11 +68,7 @@ class ComponentFactory(Iterable[Tuple[str, Any]]):
         component = self.component_map.get(component_name)
 
         if component is None:
-            raise KeyError(
-                "No object named '{}' found in '{}' registry!".format(
-                    component, self.factory_name
-                )
-            )
+            raise KeyError(f"No object named '{component}' found in '{self.factory_name}' registry!")
 
         return component
 
@@ -89,7 +83,7 @@ class ComponentFactory(Iterable[Tuple[str, Any]]):
             tablefmt="fancy_grid",
         )
 
-        return "Factory of {}:\n".format(self.factory_name) + table
+        return f"Factory of {self.factory_name}:\n" + table
 
     def __iter__(self) -> Iterator[Tuple[str, Any]]:
         """Iterate through component map"""

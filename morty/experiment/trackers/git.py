@@ -3,8 +3,8 @@ from pathlib import Path
 
 from pydantic import BaseModel
 
-from morty.experiment.experiment_manager.experiment_manager import Experiment
-from morty.experiment.experiment_manager.trackers.base import Tracker
+from morty.experiment import Experiment
+from morty.experiment.trackers.base import Tracker
 
 
 class GitDetails(BaseModel):
@@ -18,11 +18,13 @@ def get_repository(project_path: Path):
 
         return git.Repo(project_path, search_parent_directories=True)
     except ImportError:
-        warnings.warn("""
+        warnings.warn(
+            """
         git package should installed to track repository information:
         - pip install GitPython
         - poetry add GitPython
-        """)
+        """
+        )
 
 
 def get_repository_information(project_path: Path) -> GitDetails:
@@ -35,7 +37,9 @@ def get_repository_information(project_path: Path) -> GitDetails:
     try:
         current_branch = repository.active_branch.name
     except TypeError as e:
-        if str(e.args[0]).startswith("HEAD is a detached symbolic reference as it points to"):
+        if str(e.args[0]).startswith(
+            "HEAD is a detached symbolic reference as it points to"
+        ):
             current_branch = "Detached HEAD"
 
     return GitDetails(
