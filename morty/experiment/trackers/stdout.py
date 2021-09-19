@@ -31,6 +31,9 @@ class StreamLogger:
         return self.stream.writelines(lines)
 
     def __getattr__(self, name):
+        """
+        Invokes methods that are not decorated
+        """
         return getattr(self.stream, name)
 
 

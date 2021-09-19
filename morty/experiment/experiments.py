@@ -1,11 +1,11 @@
 import json
 import pickle
 from datetime import datetime
+from enum import Enum, unique
 from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Type
 
 from funkybob import RandomNameGenerator
-from pydantic import BaseModel
 
 from morty.experiment.trackers import BaseTracker
 
@@ -20,13 +20,13 @@ def generate_experiment_id() -> str:
     return f"{timestamp}_{readable_id}"
 
 
-class ExperimentContext(BaseModel):
-    """
-    Experiment context needed to resume existing experiment
-    """
-
-    id: str
-    directory: str
+@unique
+class ExperimentFiles(str, Enum):
+    config = "config.txt"
+    git = "git.json"
+    uncommitted_changes = "uncommitted_changes.diff"
+    exceptions = "exceptions.log"
+    stdout = "output.log"
 
 
 class Experiment:
@@ -36,23 +36,15 @@ class Experiment:
     """
 
     def __init__(
-        self,
-        root_directory: str,
-        experiment_trackers: Iterable[Type[BaseTracker]] = (),
-        experiment_context: Optional[ExperimentContext] = None,
+            self,
+            root_directory: str,
+            experiment_trackers: Iterable[Type[BaseTracker]] = (),
     ):
         self.root_directory: Path = Path(root_directory)
         self.experiment_id: str = generate_experiment_id()
         self.experiment_directory: Path = Path(self.experiment_id)
         self.experiment_trackers = experiment_trackers
         self.active_experiment_trackers: List[BaseTracker] = []
-
-        if not experiment_context:
-            return
-
-        # loading existing experiment
-        self.experiment_id = experiment_context.id
-        self.experiment_directory = Path(experiment_context.directory)
 
     def get_directory(self) -> Path:
         """
@@ -108,11 +100,27 @@ class Experiment:
 
         json.dump(data, open(output_path, "w"), indent=4, sort_keys=True)
 
-    def start(self):
+    def backup_files(self, backup_files: Iterable[str]):
+        """
+        Backup list of files
+        """
+        pass
+
+    def start(
+            self,
+            configs: Optional[Any] = None,
+            backup_files: Iterable[str] = (),
+    ):
         """
         Starts experiment tracking
         """
         self.get_directory().mkdir(parents=True, exist_ok=True)
+
+        if configs:
+            self.log_configs(configs)
+
+        if backup_files:
+            self.backup_files(backup_files)
 
         self.active_experiment_trackers = self._activate_trackers(
             self.experiment_trackers
@@ -122,10 +130,10 @@ class Experiment:
         """
         Stops experiment tracking
         """
-        self._deactivate_trackers(self.active_experiment_trackers)
+        self._deactivate_trackers()
 
     def _activate_trackers(
-        self, experiment_trackers: Iterable[Type[BaseTracker]]
+            self, experiment_trackers: Iterable[Type[BaseTracker]]
     ) -> List[BaseTracker]:
         """
         Activates all trackers to log all kind of information about experiment
@@ -140,10 +148,9 @@ class Experiment:
 
         return active_trackers
 
-    @staticmethod
-    def _deactivate_trackers(active_trackers: List[BaseTracker]):
+    def _deactivate_trackers(self):
         """
         Stop active trackers when experiment is over
         """
-        for tracker in active_trackers:
+        for tracker in self.active_experiment_trackers:
             tracker.stop()

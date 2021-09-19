@@ -7,9 +7,8 @@ if TYPE_CHECKING:
 
 class BaseTracker(abc.ABC):
     """
-    Base tracker class for the rest of experiment trackers
+    Interface of information trackers
     """
-
     def __init__(self, experiment: "Experiment"):
         self.experiment = experiment
 
@@ -20,3 +19,4 @@ class BaseTracker(abc.ABC):
     @abc.abstractmethod
     def stop(self):
         pass
+

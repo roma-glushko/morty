@@ -1,3 +1,4 @@
+import atexit
 from typing import TYPE_CHECKING, Any, Iterable, Optional, Type
 
 from morty.experiment.experiments import Experiment
@@ -17,10 +18,12 @@ class ExperimentManager:
         root_dir: str = "./experiments",
         experiment_trackers: Iterable[Type["BaseTracker"]] = DEFAULT_TRACKER_LIST,
         configs: Optional[Any] = None,
+        backup_files: Iterable[str] = (),
     ):
         self.root_directory = root_dir
         self.experiment_trackers = experiment_trackers
         self.configs = configs
+        self.backup_files = backup_files
 
     def create(self) -> Experiment:
         """
@@ -31,9 +34,12 @@ class ExperimentManager:
             experiment_trackers=self.experiment_trackers,
         )
 
-        experiment.start()
+        experiment.start(
+            configs=self.configs,
+            backup_files=self.backup_files,
+        )
 
-        if self.configs:
-            experiment.log_configs(self.configs)
+        atexit.register(lambda: experiment.finish())
 
         return experiment
+

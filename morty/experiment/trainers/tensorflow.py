@@ -39,6 +39,8 @@ class TensorflowTrainingTracker(Callback):
                 writer = csv.writer(log_file)
                 writer.writerow(["epoch"] + [*logs.keys()])
 
+        epoch_info = [epoch] + [*logs.values()]
+
         with open(log_path, "a") as log_file:
             writer = csv.writer(log_file)
-            writer.writerow([epoch] + [*logs.values()])
+            writer.writerow(epoch_info)
