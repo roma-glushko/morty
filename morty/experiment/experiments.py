@@ -11,6 +11,7 @@ from funkybob import RandomNameGenerator
 from pydantic import BaseModel
 
 from morty.experiment.common import ExperimentEncoder
+from morty.experiment.entities import GitDetails
 from morty.experiment.trackers import BaseTracker
 
 
@@ -44,11 +45,6 @@ class ExperimentMeta(BaseModel):
     experiment_id: str
 
 
-class GitDetails(BaseModel):
-    current_branch: str
-    current_commit_hash: str
-
-
 class Experiment:
     """
     Experiment represents context of the current experiment
@@ -56,10 +52,10 @@ class Experiment:
     """
 
     def __init__(
-            self,
-            root_directory: PathLike,
-            existing_experiment_dir: Optional[PathLike] = None,
-            experiment_trackers: Iterable[Type[BaseTracker]] = (),
+        self,
+        root_directory: PathLike,
+        existing_experiment_dir: Optional[PathLike] = None,
+        experiment_trackers: Iterable[Type[BaseTracker]] = (),
     ):
         self.root_directory: Path = Path(root_directory)
 
@@ -156,9 +152,9 @@ class Experiment:
         pass
 
     def start(
-            self,
-            configs: Optional[Any] = None,
-            backup_files: Iterable[str] = (),
+        self,
+        configs: Optional[Any] = None,
+        backup_files: Iterable[str] = (),
     ):
         """
         Starts experiment tracking
@@ -184,7 +180,7 @@ class Experiment:
         self._deactivate_trackers()
 
     def _activate_trackers(
-            self, experiment_trackers: Iterable[Type[BaseTracker]]
+        self, experiment_trackers: Iterable[Type[BaseTracker]]
     ) -> List[BaseTracker]:
         """
         Activates all trackers to log all kind of information about experiment
@@ -217,7 +213,11 @@ class ExperimentIO:
     Abstracts away all specific of working with filesystem
     """
 
-    def __init__(self, experiment_dir: PathLike, encoder_class: Type[JSONEncoder] = ExperimentEncoder):
+    def __init__(
+        self,
+        experiment_dir: PathLike,
+        encoder_class: Type[JSONEncoder] = ExperimentEncoder,
+    ):
         self.experiment_dir = Path(experiment_dir)
         self.encoder_class = encoder_class
 
@@ -239,13 +239,21 @@ class ExperimentIO:
 
         return pickle.load(open(binary_path, "rb"))
 
-    def log_json(self, data: Union[Dict, BaseModel], filename: str, file_ext: str = "json"):
+    def log_json(
+        self, data: Union[Dict, BaseModel], filename: str, file_ext: str = "json"
+    ):
         """
         Save data as JSON file
         """
         output_path: Path = self.get_file_path(f"{filename}.{file_ext}")
 
-        json.dump(data, open(output_path, "w"), indent=4, sort_keys=True, cls=self.encoder_class)
+        json.dump(
+            data,
+            open(output_path, "w"),
+            indent=4,
+            sort_keys=True,
+            cls=self.encoder_class,
+        )
 
     def get_json(self, filename: str, file_ext: str = "json") -> Dict:
         file_path: Path = self.get_file_path(f"{filename}.{file_ext}")

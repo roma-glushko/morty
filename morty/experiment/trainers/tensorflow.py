@@ -1,5 +1,6 @@
 import csv
 from pathlib import Path
+from typing import IO
 
 from morty.experiment import Experiment
 
@@ -27,30 +28,28 @@ class TensorflowTrainingTracker(Callback):
 
         self.experiment = experiment
         self.log_file = log_file
+        self.log_path: Path = self.experiment.get_directory() / self.log_file
 
     def on_train_begin(self, logs=None):
-        # collect train.csv schema information
-        print(logs)
+        self.log_handle: IO = open(self.log_path, "w")
+        self.writer = csv.writer(self.log_handle)
 
     def on_epoch_end(self, epoch, logs=None):
-        log_path: Path = self.experiment.get_directory() / self.log_file
 
         # todo: handle a case when a new metric was added and the new output should be put
         # todo: to a new file
 
-        if not log_path.exists():
-            with open(log_path, "w") as log_file:
-                writer = csv.writer(log_file)
-                writer.writerow(["epoch"] + [*logs.keys()])
+        if not self.log_path.stat().st_size:
+            columns = ("epoch", *logs.keys())
+            self.writer.writerow(columns)
 
-        epoch_info = [epoch] + [*logs.values()]
+        epoch_info = (epoch, *logs.values())
 
-        with open(log_path, "a") as log_file:
-            writer = csv.writer(log_file)
-            writer.writerow(epoch_info)
+        self.writer.writerow(epoch_info)
 
     def on_train_end(self, logs=None):
         # summarize train.csv file
+        self.log_handle.close()
         pass
 
     def on_test_begin(self, logs=None):
