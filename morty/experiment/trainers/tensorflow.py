@@ -28,6 +28,10 @@ class TensorflowTrainingTracker(Callback):
         self.experiment = experiment
         self.log_file = log_file
 
+    def on_train_begin(self, logs=None):
+        # collect train.csv schema information
+        print(logs)
+
     def on_epoch_end(self, epoch, logs=None):
         log_path: Path = self.experiment.get_directory() / self.log_file
 
@@ -44,3 +48,11 @@ class TensorflowTrainingTracker(Callback):
         with open(log_path, "a") as log_file:
             writer = csv.writer(log_file)
             writer.writerow(epoch_info)
+
+    def on_train_end(self, logs=None):
+        # summarize train.csv file
+        pass
+
+    def on_test_begin(self, logs=None):
+        # todo: log test performance to test.csv file
+        pass

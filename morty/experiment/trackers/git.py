@@ -67,12 +67,10 @@ class GitTracker(BaseTracker):
     def start(self):
         repo_info, uncommitted_changes = get_repository_information(__file__)
 
-        self.experiment.log_json(repo_info.dict(), filename="git")
+        self.experiment.log_git_details(repo_info.dict())
 
         if uncommitted_changes:
-            self.experiment.log_text(
-                uncommitted_changes, filename="uncommitted_changes", file_ext="diff"
-            )
+            self.experiment.log_uncommitted_changes(uncommitted_changes)
 
     def stop(self):
         pass

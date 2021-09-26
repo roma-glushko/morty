@@ -2,12 +2,15 @@ import json
 import pickle
 from datetime import datetime
 from enum import Enum, unique
+from json import JSONEncoder
 from os import PathLike
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Type
+from typing import Any, Dict, Iterable, List, Optional, Type, Union
 
 from funkybob import RandomNameGenerator
+from pydantic import BaseModel
 
+from morty.experiment.common import ExperimentEncoder
 from morty.experiment.trackers import BaseTracker
 
 
@@ -36,6 +39,16 @@ class ExperimentFiles(str, Enum):
     stdout = "output.log"
 
 
+class ExperimentMeta(BaseModel):
+    created_at: datetime
+    experiment_id: str
+
+
+class GitDetails(BaseModel):
+    current_branch: str
+    current_commit_hash: str
+
+
 class Experiment:
     """
     Experiment represents context of the current experiment
@@ -43,10 +56,10 @@ class Experiment:
     """
 
     def __init__(
-        self,
-        root_directory: str,
-        existing_experiment_dir: Optional[str] = None,
-        experiment_trackers: Iterable[Type[BaseTracker]] = (),
+            self,
+            root_directory: PathLike,
+            existing_experiment_dir: Optional[PathLike] = None,
+            experiment_trackers: Iterable[Type[BaseTracker]] = (),
     ):
         self.root_directory: Path = Path(root_directory)
 
@@ -54,8 +67,6 @@ class Experiment:
             self._load_experiment(existing_experiment_dir)
         else:
             self._init_new_experiment()
-
-        self.io = ExperimentIO(self.get_directory())
 
         self.experiment_trackers = experiment_trackers
         self.active_experiment_trackers: List[BaseTracker] = []
@@ -66,14 +77,16 @@ class Experiment:
         self.experiment_directory: Path = Path(
             generate_experiment_dir_name(self.created_at, self.experiment_id)
         )
+        self.io = ExperimentIO(self.get_directory())
 
-    def _load_experiment(self, experiment_dir: str):
-        self.experiment_directory = experiment_dir
+    def _load_experiment(self, experiment_dir: PathLike):
+        self.experiment_directory = Path(experiment_dir)
+        self.io = ExperimentIO(self.get_directory())
 
         meta = self.get_meta()
 
-        self.created_at = meta["created_at"]
-        self.experiment_id = meta["experiment_id"]
+        self.created_at = meta.created_at
+        self.experiment_id = meta.experiment_id
 
     def get_directory(self) -> Path:
         """
@@ -86,7 +99,7 @@ class Experiment:
         Log configs as a text file
         """
         self.io.log_text(str(configs), "configs", file_ext="txt")
-        self.io.log_binary("configs.bin", configs)
+        # self.io.log_json(configs, filename="config", file_ext="json")
 
     def get_configs(self) -> List[str]:
         return self.io.get_text(filename="config", file_ext="log")
@@ -113,17 +126,25 @@ class Experiment:
         """
         Log Experiment Metadata
         """
+        meta = ExperimentMeta(
+            experiment_id=self.experiment_id,
+            created_at=self.created_at.timestamp(),
+        )
+
         self.io.log_json(
-            {
-                "experiment_id": self.experiment_id,
-                "created_at": self.created_at.timestamp(),
-            },
+            meta,
             filename="meta",
             file_ext="json",
         )
 
-    def get_meta(self):
-        return self.io.get_json(filename="meta", file_ext="json")
+    def get_meta(self) -> ExperimentMeta:
+        return ExperimentMeta(**self.io.get_json(filename="meta", file_ext="json"))
+
+    def log_git_details(self, git_info: GitDetails):
+        self.io.log_json(git_info, filename="git")
+
+    def get_git_details(self) -> GitDetails:
+        return GitDetails(**self.io.get_json(filename="git", file_ext="json"))
 
     def log_artifact(self, file_name: str, artifact: Any):
         self.io.log_binary(file_name, artifact)
@@ -135,9 +156,9 @@ class Experiment:
         pass
 
     def start(
-        self,
-        configs: Optional[Any] = None,
-        backup_files: Iterable[str] = (),
+            self,
+            configs: Optional[Any] = None,
+            backup_files: Iterable[str] = (),
     ):
         """
         Starts experiment tracking
@@ -163,7 +184,7 @@ class Experiment:
         self._deactivate_trackers()
 
     def _activate_trackers(
-        self, experiment_trackers: Iterable[Type[BaseTracker]]
+            self, experiment_trackers: Iterable[Type[BaseTracker]]
     ) -> List[BaseTracker]:
         """
         Activates all trackers to log all kind of information about experiment
@@ -185,14 +206,20 @@ class Experiment:
         for tracker in self.active_experiment_trackers:
             tracker.stop()
 
+    def log_uncommitted_changes(self, uncommitted_changes: str):
+        self.io.log_text(
+            uncommitted_changes, filename="uncommitted_changes", file_ext="diff"
+        )
+
 
 class ExperimentIO:
     """
     Abstracts away all specific of working with filesystem
     """
 
-    def __init__(self, experiment_dir: PathLike):
+    def __init__(self, experiment_dir: PathLike, encoder_class: Type[JSONEncoder] = ExperimentEncoder):
         self.experiment_dir = Path(experiment_dir)
+        self.encoder_class = encoder_class
 
     def get_file_path(self, file_name: str) -> Path:
         """
@@ -212,13 +239,13 @@ class ExperimentIO:
 
         return pickle.load(open(binary_path, "rb"))
 
-    def log_json(self, data: Dict, filename: str, file_ext: str = "json"):
+    def log_json(self, data: Union[Dict, BaseModel], filename: str, file_ext: str = "json"):
         """
         Save data as JSON file
         """
         output_path: Path = self.get_file_path(f"{filename}.{file_ext}")
 
-        json.dump(data, open(output_path, "w"), indent=4, sort_keys=True)
+        json.dump(data, open(output_path, "w"), indent=4, sort_keys=True, cls=self.encoder_class)
 
     def get_json(self, filename: str, file_ext: str = "json") -> Dict:
         file_path: Path = self.get_file_path(f"{filename}.{file_ext}")
