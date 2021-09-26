@@ -9,6 +9,7 @@ class BaseTracker(abc.ABC):
     """
     Interface of information trackers
     """
+
     def __init__(self, experiment: "Experiment"):
         self.experiment = experiment
 
@@ -19,4 +20,3 @@ class BaseTracker(abc.ABC):
     @abc.abstractmethod
     def stop(self):
         pass
-

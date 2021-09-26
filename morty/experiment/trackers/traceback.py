@@ -97,4 +97,4 @@ class TracebackTracker(BaseTracker):
         """
         Log critical exceptions
         """
-        self.experiment.log_exception(trace_lines)
+        self.experiment.log_exceptions(trace_lines)

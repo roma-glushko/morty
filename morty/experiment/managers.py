@@ -42,4 +42,3 @@ class ExperimentManager:
         atexit.register(lambda: experiment.finish())
 
         return experiment
-
