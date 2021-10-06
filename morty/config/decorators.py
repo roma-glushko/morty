@@ -20,7 +20,7 @@ def config(
 
     def decorate_main_func(run_func: RunFunction) -> Callable[[], None]:
         @functools.wraps(run_func)
-        def decorated_main(configs: Optional[ConfigManager] = None) -> Any:
+        def decorate_main_func(configs: Optional[ConfigManager] = None) -> Any:
             if configs is not None:
                 # todo: document this case or remove it
                 return run_func(configs)
@@ -37,7 +37,7 @@ def config(
                 config_name=name,
             )
 
-        return decorated_main
+        return decorate_main_func
 
     return decorate_main_func
 

@@ -2,14 +2,8 @@ import warnings
 from pathlib import Path
 from typing import Optional, Tuple
 
-from pydantic import BaseModel
-
+from morty.experiment.entities import GitDetails
 from morty.experiment.trackers.base import BaseTracker
-
-
-class GitDetails(BaseModel):
-    current_branch: str
-    current_commit_hash: str
 
 
 def get_repository(project_path: Path):
@@ -49,8 +43,8 @@ def get_repository_information(project_path: Path) -> Tuple[GitDetails, Optional
 
     return (
         GitDetails(
-            current_commit_hash=current_commit.hexsha,
-            current_branch=current_branch,
+            commit_hash=current_commit.hexsha,
+            branch=current_branch,
         ),
         uncommitted_changes,
     )
@@ -67,12 +61,10 @@ class GitTracker(BaseTracker):
     def start(self):
         repo_info, uncommitted_changes = get_repository_information(__file__)
 
-        self.experiment.log_json(repo_info.dict(), filename="git")
+        self.experiment.log_git_details(repo_info)
 
         if uncommitted_changes:
-            self.experiment.log_text(
-                uncommitted_changes, filename="uncommitted_changes", file_ext="diff"
-            )
+            self.experiment.log_uncommitted_changes(uncommitted_changes)
 
     def stop(self):
         pass
