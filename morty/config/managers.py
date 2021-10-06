@@ -87,6 +87,10 @@ class ConfigManager:
     def __getattr__(self, name):
         return getattr(self.args, name)
 
+    def __iter__(self):
+        for key, item in self.args.items():
+            yield key, item
+
     def __repr__(self):
         return f"ConfigManager({json.dumps(self.args, indent=2, default=str)})"
 
@@ -101,6 +105,10 @@ class NotebookConfigManager:
 
     def __getattr__(self, name):
         return getattr(self.args, name)
+
+    def __iter__(self):
+        for key, item in self.args.items():
+            yield key, item
 
     def __repr__(self):
         return f"NotebookConfigManager({json.dumps(self.args, indent=2)})"

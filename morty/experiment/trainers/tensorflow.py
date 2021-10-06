@@ -4,6 +4,8 @@ from typing import IO
 
 from morty.experiment import Experiment
 
+# from morty.experiment.leaderboard.summarizers import summarize_training
+
 try:
     from tensorflow.keras.callbacks import Callback
 except ImportError:
@@ -35,7 +37,6 @@ class TensorflowTrainingTracker(Callback):
         self.writer = csv.writer(self.log_handle)
 
     def on_epoch_end(self, epoch, logs=None):
-
         # todo: handle a case when a new metric was added and the new output should be put
         # todo: to a new file
 
@@ -48,9 +49,9 @@ class TensorflowTrainingTracker(Callback):
         self.writer.writerow(epoch_info)
 
     def on_train_end(self, logs=None):
-        # summarize train.csv file
         self.log_handle.close()
-        pass
+        # summarize train.csv file
+        # summarize_training()
 
     def on_test_begin(self, logs=None):
         # todo: log test performance to test.csv file
