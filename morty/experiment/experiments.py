@@ -10,7 +10,7 @@ from typing import Any, Dict, Iterable, List, Optional, Type, Union
 from funkybob import RandomNameGenerator
 from pydantic import BaseModel
 
-from morty.experiment.common import ExperimentEncoder
+from morty.experiment.common import ExperimentEncoder, flatten_dict
 from morty.experiment.entities import GitDetails
 from morty.experiment.trackers import BaseTracker
 
@@ -73,31 +73,41 @@ class Experiment:
         self.experiment_directory: Path = Path(
             generate_experiment_dir_name(self.created_at, self.experiment_id)
         )
-        self.io = ExperimentIO(self.get_directory())
+        self.io = ExperimentIO(self.directory)
 
     def _load_experiment(self, experiment_dir: PathLike):
         self.experiment_directory = Path(experiment_dir)
-        self.io = ExperimentIO(self.get_directory())
+        self.io = ExperimentIO(self.directory)
 
-        meta = self.get_meta()
+        meta = self.meta
 
         self.created_at = meta.created_at
         self.experiment_id = meta.experiment_id
 
-    def get_directory(self) -> Path:
+    @property
+    def directory(self) -> Path:
         """
         Retrieve a path to the current experiment directory
         """
         return self.root_directory / self.experiment_directory
 
-    def log_configs(self, configs: Any):
+    def log_configs(self, configs: dict):
         """
         Log configs as a text file
         """
         self.io.log_text(str(configs), "configs", file_ext="txt")
-        # self.io.log_json(configs, filename="config", file_ext="json")
 
-    def get_configs(self) -> List[str]:
+        try:
+            self.io.log_json(flatten_dict(configs), filename="config", file_ext="json")
+        except Exception as e:
+            raise ValueError(
+                f"Failed to serialize config object: \n "
+                f"{str(e)} \n "
+                f"Make sure it can be converted to dictionary"
+            )
+
+    @property
+    def configs(self) -> List[str]:
         return self.io.get_text(filename="config", file_ext="log")
 
     def log_exceptions(self, trace_lines: List[str]):
@@ -106,7 +116,8 @@ class Experiment:
         """
         self.io.log_text(trace_lines, "exceptions", file_ext="log")
 
-    def get_exceptions(self) -> List[str]:
+    @property
+    def exceptions(self) -> List[str]:
         return self.io.get_text(filename="exceptions", file_ext="log")
 
     def log_output(self, lines: Iterable[str]):
@@ -115,7 +126,8 @@ class Experiment:
         """
         self.io.log_text(lines, "output", file_ext="log")
 
-    def get_output(self) -> List[str]:
+    @property
+    def output(self) -> List[str]:
         return self.io.get_text(filename="output", file_ext="log")
 
     def log_meta(self):
@@ -133,13 +145,15 @@ class Experiment:
             file_ext="json",
         )
 
-    def get_meta(self) -> ExperimentMeta:
+    @property
+    def meta(self) -> ExperimentMeta:
         return ExperimentMeta(**self.io.get_json(filename="meta", file_ext="json"))
 
     def log_git_details(self, git_info: GitDetails):
         self.io.log_json(git_info, filename="git")
 
-    def get_git_details(self) -> GitDetails:
+    @property
+    def git_details(self) -> GitDetails:
         return GitDetails(**self.io.get_json(filename="git", file_ext="json"))
 
     def log_artifact(self, file_name: str, artifact: Any):
@@ -159,7 +173,7 @@ class Experiment:
         """
         Starts experiment tracking
         """
-        self.get_directory().mkdir(parents=True, exist_ok=True)
+        self.directory.mkdir(parents=True, exist_ok=True)
 
         self.log_meta()
 

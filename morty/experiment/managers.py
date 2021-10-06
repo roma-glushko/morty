@@ -52,16 +52,11 @@ class ExperimentManager:
         """
         Retrieves a collection of all experiments
         """
-        experiments = []
 
         for experiment_dir in glob(f"{self.root_directory}/*/"):
             experiment_directory = Path(experiment_dir)
 
-            experiments.append(
-                Experiment(
-                    root_directory=Path(self.root_directory),
-                    existing_experiment_dir=Path(experiment_directory.name),
-                )
+            yield Experiment(
+                root_directory=Path(self.root_directory),
+                existing_experiment_dir=Path(experiment_directory.name),
             )
-
-        return experiments

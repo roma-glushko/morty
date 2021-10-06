@@ -3,9 +3,12 @@ from json import JSONEncoder
 
 from pydantic import BaseModel
 
+from morty.config import ConfigManager
+
 json_encoders = {
     datetime: lambda o: str(o.isoformat()),
     BaseModel: lambda o: o.dict(),
+    ConfigManager: lambda o: dict(o.args),
 }
 
 
