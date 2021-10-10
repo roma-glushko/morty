@@ -1,9 +1,11 @@
 import atexit
 from glob import glob
+from os import PathLike
 from pathlib import Path
 from typing import TYPE_CHECKING, Dict, Iterable, Optional, Type, Union
 
 from morty.config import ConfigManager, NotebookConfigManager
+from morty.experiment.common import Directory
 from morty.experiment.experiments import Experiment
 from morty.experiment.trackers import DEFAULT_TRACKER_LIST
 
@@ -20,7 +22,7 @@ class ExperimentManager:
 
     def __init__(
         self,
-        root_dir: str = "./experiments",
+        root_dir: PathLike = "./experiments",
         experiment_trackers: Iterable[Type["BaseTracker"]] = DEFAULT_TRACKER_LIST,
         configs: Optional[Configs] = None,
         backup_files: Iterable[str] = (),
@@ -29,6 +31,7 @@ class ExperimentManager:
         self.experiment_trackers = experiment_trackers
         self.configs = configs
         self.backup_files = backup_files
+        self.io = Directory(Path(root_dir))
 
     def create(self) -> Experiment:
         """
@@ -48,7 +51,7 @@ class ExperimentManager:
 
         return experiment
 
-    def get_all_experiments(self) -> Iterable[Experiment]:
+    def __iter__(self) -> Iterable[Experiment]:
         """
         Retrieves a collection of all experiments
         """

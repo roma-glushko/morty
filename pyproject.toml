@@ -19,6 +19,7 @@ funkybob = "^2018.5.1"
 pydantic = "^1.8.2"
 click = "^8.0.1"
 rich = "^10.11.0"
+Flask = "^2.0.2"
 
 [tool.poetry.scripts]
 morty = 'morty.cli:main'

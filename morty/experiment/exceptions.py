@@ -1,0 +1,2 @@
+class IndexWarning(UserWarning):
+    pass

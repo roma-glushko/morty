@@ -1,16 +1,13 @@
-import json
-import pickle
 from datetime import datetime
 from enum import Enum, unique
-from json import JSONEncoder
 from os import PathLike
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Optional, Type, Union
+from typing import Any, Dict, Iterable, List, Optional, Type
 
 from funkybob import RandomNameGenerator
 from pydantic import BaseModel
 
-from morty.experiment.common import ExperimentEncoder, flatten_dict
+from morty.experiment.common import Directory, flatten_dict
 from morty.experiment.entities import GitDetails
 from morty.experiment.trackers import BaseTracker
 
@@ -73,11 +70,11 @@ class Experiment:
         self.experiment_directory: Path = Path(
             generate_experiment_dir_name(self.created_at, self.experiment_id)
         )
-        self.io = ExperimentIO(self.directory)
+        self.io = Directory(self.directory)
 
     def _load_experiment(self, experiment_dir: PathLike):
         self.experiment_directory = Path(experiment_dir)
-        self.io = ExperimentIO(self.directory)
+        self.io = Directory(self.directory)
 
         meta = self.meta
 
@@ -107,8 +104,8 @@ class Experiment:
             )
 
     @property
-    def configs(self) -> List[str]:
-        return self.io.get_text(filename="config", file_ext="log")
+    def configs(self) -> Dict[str, Any]:
+        return self.io.get_json(filename="config")
 
     def log_exceptions(self, trace_lines: List[str]):
         """
@@ -153,7 +150,7 @@ class Experiment:
         self.io.log_json(git_info, filename="git")
 
     @property
-    def git_details(self) -> GitDetails:
+    def git(self) -> GitDetails:
         return GitDetails(**self.io.get_json(filename="git", file_ext="json"))
 
     def log_artifact(self, file_name: str, artifact: Any):
@@ -220,70 +217,3 @@ class Experiment:
         self.io.log_text(
             uncommitted_changes, filename="uncommitted_changes", file_ext="diff"
         )
-
-
-class ExperimentIO:
-    """
-    Abstracts away all specific of working with filesystem
-    """
-
-    def __init__(
-        self,
-        experiment_dir: PathLike,
-        encoder_class: Type[JSONEncoder] = ExperimentEncoder,
-    ):
-        self.experiment_dir = Path(experiment_dir)
-        self.encoder_class = encoder_class
-
-    def get_file_path(self, file_name: str) -> Path:
-        """
-        Retrieve a path to the current experiment directory
-        """
-        return self.experiment_dir / file_name
-
-    def log_binary(self, file_name: str, binary: Any):
-        """
-        Log an object as a binary file
-        """
-        binary_path: Path = self.get_file_path(file_name)
-        pickle.dump(binary, open(binary_path, "wb"))
-
-    def get_binary(self, file_name) -> Any:
-        binary_path: Path = self.get_file_path(file_name)
-
-        return pickle.load(open(binary_path, "rb"))
-
-    def log_json(
-        self, data: Union[Dict, BaseModel], filename: str, file_ext: str = "json"
-    ):
-        """
-        Save data as JSON file
-        """
-        output_path: Path = self.get_file_path(f"{filename}.{file_ext}")
-
-        json.dump(
-            data,
-            open(output_path, "w"),
-            indent=4,
-            sort_keys=True,
-            cls=self.encoder_class,
-        )
-
-    def get_json(self, filename: str, file_ext: str = "json") -> Dict:
-        file_path: Path = self.get_file_path(f"{filename}.{file_ext}")
-
-        return json.load(open(file_path, "r"))
-
-    def log_text(self, lines: Iterable[str], filename: str, file_ext: str = "txt"):
-        """
-        Log strings as a plain text
-        """
-        output_path: Path = self.get_file_path(f"{filename}.{file_ext}")
-
-        with open(output_path, "a") as output_file:
-            output_file.writelines(lines)
-
-    def get_text(self, filename: str, file_ext: str = "txt") -> List[str]:
-        file_path: Path = self.get_file_path(f"{filename}.{file_ext}")
-
-        return open(file_path, "r").readlines()
