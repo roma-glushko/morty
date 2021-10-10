@@ -15,7 +15,6 @@ def create_backend_app() -> Flask:
 
     @app.route("/", methods=["GET"])
     def index():
-        # return {"status": "okay"}
         return app.send_static_file("index.html")
 
     return app

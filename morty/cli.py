@@ -1,7 +1,7 @@
 import click
 from rich.console import Console
 
-from morty.experiment.leaderboard.backend import create_backend_app
+from morty.experiment.dashboard.backend import create_backend_app
 
 
 @click.group()
