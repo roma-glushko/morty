@@ -1,8 +1,8 @@
 import sys
 import tempfile
 
-from morty.experiment import ExperimentManager
-from morty.experiment.trackers import TracebackTracker
+from morty import ExperimentManager
+from morty.trackers import TracebackTracker
 
 
 def test__traceback_tracker__start():

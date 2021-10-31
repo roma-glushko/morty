@@ -1,13 +1,13 @@
 import warnings
 from contextlib import suppress
 from datetime import datetime
-from typing import Any, Dict, Set, Iterable
+from typing import Any, Dict, Iterable, Set
 
 from pydantic.main import BaseModel
 
-from morty.experiment import Experiment
-from morty.experiment.dashboard.summarizers import summarize_trainings
-from morty.experiment.exceptions import IndexWarning
+from morty import Experiment
+from morty.dashboard.summarizers import summarize_trainings
+from morty.exceptions import IndexWarning
 
 
 class IndexEntry(BaseModel):

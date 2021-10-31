@@ -2,7 +2,7 @@ import abc
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
-    from morty.experiment.experiments import Experiment
+    from morty.experiments import Experiment
 
 
 class BaseTracker(abc.ABC):

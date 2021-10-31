@@ -4,14 +4,14 @@ from os import PathLike
 from pathlib import Path
 from typing import TYPE_CHECKING, Dict, Iterable, Optional, Type, Union
 
+from morty.common import Directory
 from morty.config import ConfigManager, NotebookConfigManager
-from morty.experiment.common import Directory
-from morty.experiment.experiments import Experiment
-from morty.experiment.trackers import DEFAULT_TRACKER_LIST
-from morty.experiment.dashboard.indexers import reindex_experiments
+from morty.dashboard.indexers import reindex_experiments
+from morty.experiments import Experiment
+from morty.trackers import DEFAULT_TRACKER_LIST
 
 if TYPE_CHECKING:
-    from morty.experiment.trackers import BaseTracker
+    from morty.trackers import BaseTracker
 
 Configs = Union[Dict, ConfigManager, NotebookConfigManager]
 
@@ -23,7 +23,7 @@ class ExperimentManager:
 
     def __init__(
         self,
-        root_dir: PathLike = "experiments",
+        root_dir: Union[str, PathLike] = "experiments",
         experiment_trackers: Iterable[Type["BaseTracker"]] = DEFAULT_TRACKER_LIST,
         configs: Optional[Configs] = None,
         backup_files: Iterable[str] = (),

@@ -1,22 +1,24 @@
 import contextlib
 import os
-import webbrowser
 import time
+import webbrowser
 from pathlib import Path
 
 import click
 from humanfriendly import format_timespan
 from rich.console import Console
 
-from morty.experiment.dashboard.backend import create_backend_app
-from morty.experiment.managers import ExperimentManager
+from morty.dashboard.backend import create_backend_app
+from morty.managers import ExperimentManager
 
 
 @contextlib.contextmanager
 def timer(output: Console):
     start_time = time.time()
     yield
-    output.print(f"✨ Done in {format_timespan(time.time() - start_time, detailed=True)}")
+    output.print(
+        f"✨ Done in {format_timespan(time.time() - start_time, detailed=True)}"
+    )
 
 
 @click.group()
@@ -33,7 +35,7 @@ def open(port: int):
     console = Console()
 
     backend_app = create_backend_app()
-    backend_app.run(port=port, debug=False)     # todo: fix reloading
+    backend_app.run(port=port, debug=False)  # todo: fix reloading
 
     # TODO: open server in a separate thread
     console.print("Opening a morty's board...")
@@ -55,6 +57,6 @@ def index(root_dir: os.PathLike):
         experiments.reindex()
 
 
-main = click.CommandCollection(sources=(leaderboard,))
+main = click.CommandCollection(sources=[leaderboard])
 
 __all__ = ("main",)

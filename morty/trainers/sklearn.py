@@ -1,4 +1,4 @@
-from morty.experiment import Experiment
+from morty import Experiment
 
 try:
     from tensorflow.keras.callbacks import Callback

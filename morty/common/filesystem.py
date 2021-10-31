@@ -7,7 +7,7 @@ from typing import Any, Dict, Iterable, List, Type, Union
 
 from pydantic import BaseModel
 
-from morty.experiment.common.serialize import ExperimentEncoder
+from morty.common.serialize import ExperimentEncoder
 
 
 class Directory:

@@ -4,10 +4,10 @@ import uuid
 from typing import TYPE_CHECKING, Callable, Dict, Iterable, List
 from uuid import UUID
 
-from morty.experiment.trackers import BaseTracker
+from morty.trackers import BaseTracker
 
 if TYPE_CHECKING:
-    from morty.experiment import Experiment
+    from morty import Experiment
 
 ExceptionHandler = Callable[[List[str]], None]
 

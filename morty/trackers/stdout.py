@@ -1,10 +1,10 @@
 import sys
 from typing import TYPE_CHECKING, List, TextIO
 
-from morty.experiment.trackers import BaseTracker
+from morty.trackers import BaseTracker
 
 if TYPE_CHECKING:
-    from morty.experiment.experiments import Experiment
+    from morty.experiments import Experiment
 
 
 class StreamLogger:

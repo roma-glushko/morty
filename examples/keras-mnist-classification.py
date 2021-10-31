@@ -7,9 +7,9 @@ import numpy as np  # noqa
 from tensorflow import keras  # noqa
 from tensorflow.keras import layers  # noqa
 
+from morty import Experiment, ExperimentManager  # noqa
 from morty.config import ConfigManager, config  # noqa
-from morty.experiment import Experiment, ExperimentManager  # noqa
-from morty.experiment.trainers import TensorflowTrainingTracker  # noqa
+from morty.trainers import TensorflowTrainingTracker  # noqa
 
 
 @config(path="configs", name="basic_config")

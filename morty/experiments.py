@@ -1,18 +1,18 @@
 from csv import DictReader
 from datetime import datetime
 from enum import Enum, unique
+from glob import glob
 from os import PathLike
 from pathlib import Path
-from glob import glob
 from typing import Any, Dict, Iterable, List, Optional, Type
 
 from funkybob import RandomNameGenerator
 from pydantic import BaseModel
 
-from morty.experiment.common import Directory, flatten_dict
-from morty.experiment.dashboard.summarizers import summarize_trainings
-from morty.experiment.entities import GitDetails
-from morty.experiment.trackers import BaseTracker
+from morty.common import Directory, flatten_dict
+from morty.dashboard.summarizers import summarize_trainings
+from morty.entities import GitDetails
+from morty.trackers import BaseTracker
 
 
 def generate_experiment_id() -> str:
@@ -44,7 +44,7 @@ class ExperimentFiles(str, Enum):
 class ExperimentMeta(BaseModel):
     created_at: datetime
     experiment_id: str
-    train_runs: List[datetime] = ()
+    train_runs: List[datetime] = []
 
 
 class Experiment:
@@ -101,8 +101,10 @@ class Experiment:
     @property
     def train_runs(self) -> Iterable[DictReader]:
         return (
-            DictReader(open(run_path, newline=''))
-            for run_path in glob(str(self.train_run_directory / "*.csv"), recursive=True)
+            DictReader(open(run_path, newline=""))
+            for run_path in glob(
+                str(self.train_run_directory / "*.csv"), recursive=True
+            )
         )
 
     def log_configs(self, configs: dict):

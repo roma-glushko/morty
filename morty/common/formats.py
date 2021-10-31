@@ -1,15 +1,17 @@
 from collections import MutableMapping
-from typing import Union
+from typing import Any, List, Tuple, Union
 
 
 def flatten_dict(
-    dictionary: dict, parent_key: Union[bool, str] = False, separator: str = "."
+    dictionary: MutableMapping,
+    parent_key: Union[bool, str] = False,
+    separator: str = ".",
 ) -> dict:
     """
     Turns a nested dictionary into a flattened dictionary
     """
 
-    items = []
+    items: List[Tuple[str, Any]] = []
 
     for key, value in dictionary.items():
         new_key = str(parent_key) + separator + key if parent_key else key

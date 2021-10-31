@@ -3,7 +3,7 @@ from datetime import datetime
 from pathlib import Path
 from typing import IO
 
-from morty.experiment import Experiment
+from morty import Experiment
 
 try:
     from tensorflow.keras.callbacks import Callback
@@ -24,7 +24,11 @@ class TensorflowTrainingTracker(Callback):
     Trainer Tracker for Tensorflow projects
     """
 
-    def __init__(self, experiment: Experiment, log_file_template: str = "train_{:%Y%m%d_%H%M%S}.csv"):
+    def __init__(
+        self,
+        experiment: Experiment,
+        log_file_template: str = "train_{:%Y%m%d_%H%M%S}.csv",
+    ):
         super().__init__()
 
         self.experiment = experiment

@@ -1,15 +1,14 @@
 import warnings
 from contextlib import suppress
-from os import getcwd, PathLike
-from pathlib import Path
+from os import PathLike, getcwd
 from typing import Optional, Tuple
 
-from morty.experiment.entities import GitDetails
-from morty.experiment.exceptions import GitLibNotInstalled
-from morty.experiment.trackers.base import BaseTracker
+from morty.entities import GitDetails
+from morty.exceptions import GitLibNotInstalled
+from morty.trackers.base import BaseTracker
 
 
-def get_repository(project_path: Path):
+def get_repository(project_path: PathLike):
     try:
         import git
 
@@ -26,7 +25,9 @@ def get_repository(project_path: Path):
         raise GitLibNotInstalled()
 
 
-def get_repository_information(project_path: PathLike) -> Tuple[GitDetails, Optional[str]]:
+def get_repository_information(
+    project_path: PathLike,
+) -> Tuple[GitDetails, Optional[str]]:
     """
     Retrieve GIT repository information morty needs to log
     """
@@ -38,7 +39,7 @@ def get_repository_information(project_path: PathLike) -> Tuple[GitDetails, Opti
         current_branch = repository.active_branch.name
     except TypeError as e:
         if str(e.args[0]).startswith(
-                "HEAD is a detached symbolic reference as it points to"
+            "HEAD is a detached symbolic reference as it points to"
         ):
             current_branch = "Detached HEAD"
 

@@ -3,7 +3,7 @@ import random
 import numpy as np
 import tensorflow as tf
 
-from morty.experiment import set_random_seed
+from morty import set_random_seed
 
 
 def test__reproduce__set_seed():
