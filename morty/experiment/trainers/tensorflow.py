@@ -1,10 +1,9 @@
 import csv
+from datetime import datetime
 from pathlib import Path
 from typing import IO
 
 from morty.experiment import Experiment
-
-# from morty.experiment.leaderboard.summarizers import summarize_training
 
 try:
     from tensorflow.keras.callbacks import Callback
@@ -25,14 +24,19 @@ class TensorflowTrainingTracker(Callback):
     Trainer Tracker for Tensorflow projects
     """
 
-    def __init__(self, experiment: Experiment, log_file="train.csv"):
+    def __init__(self, experiment: Experiment, log_file_template: str = "train_{:%Y%m%d_%H%M%S}.csv"):
         super().__init__()
 
         self.experiment = experiment
-        self.log_file = log_file
-        self.log_path: Path = self.experiment.get_directory() / self.log_file
+        self.log_file_template = log_file_template
 
     def on_train_begin(self, logs=None):
+        self.created_at: datetime = datetime.utcnow()
+        self.log_file: str = self.log_file_template.format(self.created_at)
+        self.log_path: Path = self.experiment.train_run_directory / self.log_file
+
+        self.experiment.log_train_run(self.created_at)
+
         self.log_handle: IO = open(self.log_path, "w")
         self.writer = csv.writer(self.log_handle)
 
@@ -43,6 +47,7 @@ class TensorflowTrainingTracker(Callback):
         if not self.log_path.stat().st_size:
             columns = ("epoch", *logs.keys())
             self.writer.writerow(columns)
+            self.log_handle.flush()
 
         epoch_info = (epoch, *logs.values())
 
@@ -50,8 +55,8 @@ class TensorflowTrainingTracker(Callback):
 
     def on_train_end(self, logs=None):
         self.log_handle.close()
-        # summarize train.csv file
-        # summarize_training()
+
+        self.experiment.update_train_runs_summary()
 
     def on_test_begin(self, logs=None):
         # todo: log test performance to test.csv file

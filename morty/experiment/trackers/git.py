@@ -1,8 +1,11 @@
 import warnings
+from contextlib import suppress
+from os import getcwd, PathLike
 from pathlib import Path
 from typing import Optional, Tuple
 
 from morty.experiment.entities import GitDetails
+from morty.experiment.exceptions import GitLibNotInstalled
 from morty.experiment.trackers.base import BaseTracker
 
 
@@ -20,22 +23,22 @@ def get_repository(project_path: Path):
         """
         )
 
+        raise GitLibNotInstalled()
 
-def get_repository_information(project_path: Path) -> Tuple[GitDetails, Optional[str]]:
+
+def get_repository_information(project_path: PathLike) -> Tuple[GitDetails, Optional[str]]:
     """
     Retrieve GIT repository information morty needs to log
     """
-    repository = get_repository(project_path=project_path)
-
-    current_commit = repository.head.commit
-
     current_branch = ""
+    repository = get_repository(project_path=project_path)
+    current_commit = repository.head.commit
 
     try:
         current_branch = repository.active_branch.name
     except TypeError as e:
         if str(e.args[0]).startswith(
-            "HEAD is a detached symbolic reference as it points to"
+                "HEAD is a detached symbolic reference as it points to"
         ):
             current_branch = "Detached HEAD"
 
@@ -59,12 +62,14 @@ class GitTracker(BaseTracker):
     """
 
     def start(self):
-        repo_info, uncommitted_changes = get_repository_information(__file__)
+        with suppress(GitLibNotInstalled):
+            current_dir: str = getcwd()
+            repo_info, uncommitted_changes = get_repository_information(current_dir)
 
-        self.experiment.log_git_details(repo_info)
+            self.experiment.log_git_details(repo_info)
 
-        if uncommitted_changes:
-            self.experiment.log_uncommitted_changes(uncommitted_changes)
+            if uncommitted_changes:
+                self.experiment.log_uncommitted_changes(uncommitted_changes)
 
     def stop(self):
         pass

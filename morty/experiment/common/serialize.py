@@ -1,5 +1,6 @@
 from datetime import datetime
 from json import JSONEncoder
+from typing import Set
 
 from pydantic import BaseModel
 
@@ -9,6 +10,7 @@ json_encoders = {
     datetime: lambda o: str(o.isoformat()),
     BaseModel: lambda o: o.dict(),
     ConfigManager: lambda o: dict(o.args),
+    Set: lambda o: list(o),
 }
 
 

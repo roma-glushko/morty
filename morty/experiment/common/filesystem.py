@@ -23,6 +23,8 @@ class Directory:
         self.dir_path = Path(dir_path)
         self.encoder_class = encoder_class
 
+        self.dir_path.mkdir(parents=True, exist_ok=True)
+
     def get_file_path(self, file_name: str) -> Path:
         """
         Retrieve a path to the current experiment directory

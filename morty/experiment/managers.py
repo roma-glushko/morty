@@ -8,6 +8,7 @@ from morty.config import ConfigManager, NotebookConfigManager
 from morty.experiment.common import Directory
 from morty.experiment.experiments import Experiment
 from morty.experiment.trackers import DEFAULT_TRACKER_LIST
+from morty.experiment.dashboard.indexers import reindex_experiments
 
 if TYPE_CHECKING:
     from morty.experiment.trackers import BaseTracker
@@ -22,7 +23,7 @@ class ExperimentManager:
 
     def __init__(
         self,
-        root_dir: PathLike = "./experiments",
+        root_dir: PathLike = "experiments",
         experiment_trackers: Iterable[Type["BaseTracker"]] = DEFAULT_TRACKER_LIST,
         configs: Optional[Configs] = None,
         backup_files: Iterable[str] = (),
@@ -50,6 +51,11 @@ class ExperimentManager:
         atexit.register(lambda: experiment.finish())
 
         return experiment
+
+    def reindex(self):
+        index = reindex_experiments(self)
+
+        self.io.log_json(index.dict(), filename=".index")
 
     def __iter__(self) -> Iterable[Experiment]:
         """

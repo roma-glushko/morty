@@ -31,7 +31,8 @@ const columns = [
     ],
     // specify the condition of filtering result
     // here is that finding the name started with `value`
-    onFilter: (value: any, record: { name: string | any[]; }) => record.name.indexOf(value) === 0,
+    onFilter: (value: any, record: { name: string | any[] }) =>
+      record.name.indexOf(value) === 0,
     sorter: (a: { name: string | any[] }, b: { name: string | any[] }) =>
       a.name.length - b.name.length,
     sortDirections: [`descend`],
@@ -92,5 +93,5 @@ function onChange(pagination: any, filters: any, sorter: any, extra: any) {
 }
 
 export const ExperimentTable: FunctionComponent = () => (
-  <Table columns={columns} dataSource={data} onChange={onChange} />
+  <Table /* columns={columns} */ dataSource={data} onChange={onChange} />
 );

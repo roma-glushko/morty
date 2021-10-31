@@ -1,10 +1,12 @@
 import warnings
+from contextlib import suppress
 from datetime import datetime
-from typing import Any, Dict, Set
+from typing import Any, Dict, Set, Iterable
 
-from pydantic import BaseModel
+from pydantic.main import BaseModel
 
-from morty.experiment import ExperimentManager
+from morty.experiment import Experiment
+from morty.experiment.dashboard.summarizers import summarize_trainings
 from morty.experiment.exceptions import IndexWarning
 
 
@@ -14,44 +16,50 @@ class IndexEntry(BaseModel):
 
 
 class ExperimentIndex(BaseModel):
+    last_updated_at: datetime
     columns: Set[str]
     experiments: Dict[str, IndexEntry]
 
 
-class ExperimentIndexer:
-    def reindex(self, experiment_manager: ExperimentManager):
-        columns = set()
-        experiments = {}
+def reindex_experiments(experiments: Iterable[Experiment]) -> ExperimentIndex:
+    updated_at: datetime = datetime.utcnow()
+    columns: Set[str] = set()
+    experiment_index: Dict[str, IndexEntry] = {}
 
-        for experiment in experiment_manager:
-            try:
-                meta = experiment.meta
-                git = experiment.git
-                configs = experiment.configs
+    for experiment in experiments:
+        try:
+            meta = experiment.meta
+            configs = experiment.configs
+            train_summary = summarize_trainings(experiment.train_runs)
 
-                experiment_data = {
-                    "created_at": meta.created_at,
-                    "experiment_id": meta.experiment_id,
-                    "branch": git.branch,
-                    "commit": git.commit_hash,
-                } | configs
+            git = {}
 
-                experiments[meta.experiment_id] = IndexEntry(
-                    last_updated_at=meta.created_at,
-                    data=experiment_data,
-                )
+            with suppress(OSError):
+                git = experiment.git.dict()
 
-                columns.update(set(experiment_data.keys()))
-            except Exception as e:
-                warnings.warn(
-                    f"Cannot index '{experiment.experiment_id}' experiment: {str(e)} \n "
-                    "Skipping the experiment",
-                    IndexWarning,
-                )
+            experiment_data = {
+                **meta.dict(),
+                **git,
+                **configs,
+                **train_summary,
+            }
 
-        index = ExperimentIndex(
-            columns=columns,
-            experiments=experiments,
-        )
+            experiment_index[meta.experiment_id] = IndexEntry(
+                last_updated_at=max(meta.train_runs),
+                data=experiment_data,
+            )
 
-        experiment_manager.io.log_json()
+            columns.update(set(experiment_data.keys()))
+        except Exception as e:
+            print(e.__class__.__name__)
+            warnings.warn(
+                f"Cannot index '{experiment.experiment_id}' experiment: {str(e)} \n "
+                "Skipping the experiment information",
+                IndexWarning,
+            )
+
+    return ExperimentIndex(
+        last_updated_at=updated_at,
+        columns=columns,
+        experiments=experiment_index,
+    )

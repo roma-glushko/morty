@@ -18,3 +18,8 @@ test:
 
 clean-exps:
 	rm -rf ./examples/experiments/*
+
+
+build:
+	cd ./morty/experiment/dashboard/frontend/ && yarn build
+	poetry build

@@ -1,13 +1,16 @@
+from csv import DictReader
 from datetime import datetime
 from enum import Enum, unique
 from os import PathLike
 from pathlib import Path
+from glob import glob
 from typing import Any, Dict, Iterable, List, Optional, Type
 
 from funkybob import RandomNameGenerator
 from pydantic import BaseModel
 
 from morty.experiment.common import Directory, flatten_dict
+from morty.experiment.dashboard.summarizers import summarize_trainings
 from morty.experiment.entities import GitDetails
 from morty.experiment.trackers import BaseTracker
 
@@ -29,6 +32,7 @@ def generate_experiment_dir_name(created_at: datetime, experiment_id: str) -> st
 @unique
 class ExperimentFiles(str, Enum):
     meta = "meta.json"
+    train_run_summary = "train_run_summary.json"
     config = "config.txt"
     config_bin = "config.bin"
     git = "git.json"
@@ -40,6 +44,7 @@ class ExperimentFiles(str, Enum):
 class ExperimentMeta(BaseModel):
     created_at: datetime
     experiment_id: str
+    train_runs: List[datetime] = ()
 
 
 class Experiment:
@@ -71,6 +76,7 @@ class Experiment:
             generate_experiment_dir_name(self.created_at, self.experiment_id)
         )
         self.io = Directory(self.directory)
+        self.train_run_io = Directory(self.train_run_directory)
 
     def _load_experiment(self, experiment_dir: PathLike):
         self.experiment_directory = Path(experiment_dir)
@@ -87,6 +93,17 @@ class Experiment:
         Retrieve a path to the current experiment directory
         """
         return self.root_directory / self.experiment_directory
+
+    @property
+    def train_run_directory(self) -> Path:
+        return self.directory / "train_runs"
+
+    @property
+    def train_runs(self) -> Iterable[DictReader]:
+        return (
+            DictReader(open(run_path, newline=''))
+            for run_path in glob(str(self.train_run_directory / "*.csv"), recursive=True)
+        )
 
     def log_configs(self, configs: dict):
         """
@@ -127,14 +144,15 @@ class Experiment:
     def output(self) -> List[str]:
         return self.io.get_text(filename="output", file_ext="log")
 
-    def log_meta(self):
+    def log_meta(self, meta: Optional[ExperimentMeta] = None):
         """
         Log Experiment Metadata
         """
-        meta = ExperimentMeta(
-            experiment_id=self.experiment_id,
-            created_at=self.created_at.timestamp(),
-        )
+        if not meta:
+            meta = ExperimentMeta(
+                experiment_id=self.experiment_id,
+                created_at=self.created_at.timestamp(),
+            )
 
         self.io.log_json(
             meta,
@@ -170,8 +188,6 @@ class Experiment:
         """
         Starts experiment tracking
         """
-        self.directory.mkdir(parents=True, exist_ok=True)
-
         self.log_meta()
 
         if configs:
@@ -217,3 +233,15 @@ class Experiment:
         self.io.log_text(
             uncommitted_changes, filename="uncommitted_changes", file_ext="diff"
         )
+
+    def log_train_run(self, experiment_created_at: datetime):
+        meta: ExperimentMeta = self.meta
+
+        meta.train_runs.append(experiment_created_at)
+
+        self.log_meta(meta)
+
+    def update_train_runs_summary(self):
+        summary = summarize_trainings(self.train_runs)
+
+        self.io.log_json(summary, "train_run_summary")
