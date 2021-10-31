@@ -3,9 +3,15 @@ from contextlib import suppress
 from os import PathLike, getcwd
 from typing import Optional, Tuple
 
-from morty.entities import GitDetails
+from pydantic import BaseModel
+
 from morty.exceptions import GitLibNotInstalled
 from morty.trackers.base import BaseTracker
+
+
+class GitDetails(BaseModel):
+    branch: str
+    commit_hash: str
 
 
 def get_repository(project_path: PathLike):
