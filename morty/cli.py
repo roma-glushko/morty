@@ -1,8 +1,24 @@
-import click
-from rich.console import Console
-from rich.table import Table
+import contextlib
+import os
+import time
+import webbrowser
+from pathlib import Path
 
-from morty.experiment import ExperimentManager
+import click
+from humanfriendly import format_timespan
+from rich.console import Console
+
+from morty.dashboard.backend import create_backend_app
+from morty.managers import ExperimentManager
+
+
+@contextlib.contextmanager
+def timer(output: Console):
+    start_time = time.time()
+    yield
+    output.print(
+        f"✨ Done in {format_timespan(time.time() - start_time, detailed=True)}"
+    )
 
 
 @click.group()
@@ -11,32 +27,36 @@ def leaderboard():
 
 
 @leaderboard.command()
-def list():
+@click.option("--port", type=int, default=3007)
+def open(port: int):
     """
-    Retrieves a list of experiments
+    Opens morty's leaderboard
     """
     console = Console()
 
-    with console.status("[bold green]Loading the leaderboard..."):
-        table = Table(show_header=True, header_style="bold")
+    backend_app = create_backend_app()
+    backend_app.run(port=port, debug=False)  # todo: fix reloading
 
-        table.add_column("created_at", style="dim", width=20)
-        table.add_column("experiment_id")
-        table.add_column("branch")
-
-        for experiment in ExperimentManager().get_all_experiments():
-            meta = experiment.meta
-            git = experiment.git_details
-
-            table.add_row(
-                meta.created_at.strftime("%d %b, %y %H:%M:%S"),
-                meta.experiment_id,
-                git.branch,
-            )
-
-    console.print(table)
+    # TODO: open server in a separate thread
+    console.print("Opening a morty's board...")
+    webbrowser.open(f"http://localhost:{port}/")
 
 
-main = click.CommandCollection(sources=(leaderboard,))
+@leaderboard.command()
+@click.option("--root_dir", default=os.getcwd())
+def index(root_dir: os.PathLike):
+    """
+    Opens morty's leaderboard
+    """
+    root_dir = Path(root_dir).resolve()
+    console = Console()
+
+    with timer(console):
+        console.print(f"Indexing {root_dir}...")
+        experiments = ExperimentManager(root_dir=root_dir)
+        experiments.reindex()
+
+
+main = click.CommandCollection(sources=[leaderboard])
 
 __all__ = ("main",)

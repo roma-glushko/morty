@@ -1,6 +1,6 @@
 import tempfile
 
-from morty.experiment import ExperimentManager
+from morty import ExperimentManager
 
 
 def test__experiment_manager__create_new_experiment():

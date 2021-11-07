@@ -5,7 +5,7 @@ isort:
 	isort ./morty ./examples
 
 black:
-	black .
+	black ./morty ./examples
 
 mypy:
 	mypy ./morty ./examples
@@ -18,3 +18,7 @@ test:
 
 clean-exps:
 	rm -rf ./examples/experiments/*
+
+build:
+	cd ./morty/dashboard/frontend/ && yarn build
+	poetry build

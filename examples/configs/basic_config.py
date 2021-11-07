@@ -2,7 +2,7 @@ args = {
     "num_classes": 10,
     "image_shape": (28, 28, 1),
     "val_dataset_fraction": 0.1,
-    "epochs": 15,
+    "epochs": 3,
     "batch_size": 128,
     "optimizer": "adam",
     "optimizer_configs": {

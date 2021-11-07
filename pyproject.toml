@@ -7,18 +7,35 @@ homepage = "https://github.com/roma-glushko/morty"
 authors = ["Roman Glushko <roman.glushko.m@gmail.com>"]
 license = "MIT"
 
+packages = [
+    { include = "morty" },
+]
+
+include = [
+    "morty/dashboard/frontend/build/**/*.*",
+]
+
+exclude = [
+    "morty/dashboard/frontend/*.*",
+    "morty/dashboard/frontend/src/",
+    "morty/dashboard/frontend/public/",
+    "morty/dashboard/frontend/.next/",
+    "morty/dashboard/frontend/node_modules/",
+    "morty/dashboard/frontend/.husky/",
+    "morty/dashboard/frontend/.github/",
+]
+
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
-numpy = "^1.19.5"
-matplotlib = "^3.3.3"
-pandas = "^1.2.1"
-tensorflow = "^2.4.1"
 attrdict = "^2.0.1"
 tabulate = "^0.8.9"
 funkybob = "^2018.5.1"
 pydantic = "^1.8.2"
 click = "^8.0.1"
 rich = "^10.11.0"
+Flask = "^2.0.2"
+tensorflow = "^2.6.0"
+humanfriendly = "^10.0"
 
 [tool.poetry.scripts]
 morty = 'morty.cli:main'

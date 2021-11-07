@@ -21,14 +21,16 @@ poetry add morty
 
 ## Example of Usage
 
+Trains a Keras model on MNIST:
+
 ```python
 import numpy as np
 from tensorflow import keras
 from tensorflow.keras import layers
 
 from morty.config import config, ConfigManager
-from morty.experiment import ExperimentManager, Experiment
-from morty.experiment.trainers import TensorflowTrainingTracker
+from morty import ExperimentManager, Experiment
+from morty.trainers import TensorflowTrainingTracker
 
 
 @config(path="configs", name="basic_config")
@@ -45,10 +47,6 @@ def train(configs: ConfigManager) -> None:
     # Make sure images have shape (28, 28, 1)
     x_train = np.expand_dims(x_train, -1)
     x_test = np.expand_dims(x_test, -1)
-
-    print(f"x_train shape: {x_train.shape}")
-    print(f"{x_train.shape[0]} train samples")
-    print(f"{x_test.shape[0]} test samples")
 
     # convert class vectors to binary class matrices
     y_train = keras.utils.to_categorical(y_train, configs.num_classes)
