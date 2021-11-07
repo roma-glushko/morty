@@ -20,6 +20,12 @@ clean-exps:
 	rm -rf ./examples/experiments/*
 
 build:
+	make build-frontend
+	make build-lib
+
+build-frontend:
 	cd ./morty/dashboard/frontend/ && yarn build
+
+build-lib:
 	poetry-dynamic-versioning
 	poetry build
