@@ -11,8 +11,8 @@ from pydantic import BaseModel
 
 from morty.common import Directory, flatten_dict
 from morty.dashboard.summarizers import summarize_trainings
-from morty.entities import GitDetails
 from morty.trackers import BaseTracker
+from morty.trackers.git import GitDetails
 
 
 def generate_experiment_id() -> str:
@@ -119,7 +119,7 @@ class Experiment:
             raise ValueError(
                 f"Failed to serialize config object: \n "
                 f"{str(e)} \n "
-                f"Make sure it can be converted to dictionary"
+                f"Make sure it can be converted to a dictionary"
             )
 
     @property

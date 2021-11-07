@@ -93,5 +93,5 @@ function onChange(pagination: any, filters: any, sorter: any, extra: any) {
 }
 
 export const ExperimentTable: FunctionComponent = () => (
-  <Table /* columns={columns} */ dataSource={data} onChange={onChange} />
+  <Table columns={columns} dataSource={data} onChange={onChange} />
 );

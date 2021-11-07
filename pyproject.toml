@@ -12,17 +12,17 @@ packages = [
 ]
 
 include = [
-    "morty/experiment/dashboard/frontend/build/**/*.*",
+    "morty/dashboard/frontend/build/**/*.*",
 ]
 
 exclude = [
-    "morty/experiment/dashboard/frontend/*.*",
-    "morty/experiment/dashboard/frontend/src/",
-    "morty/experiment/dashboard/frontend/public/",
-    "morty/experiment/dashboard/frontend/.next/",
-    "morty/experiment/dashboard/frontend/node_modules/",
-    "morty/experiment/dashboard/frontend/.husky/",
-    "morty/experiment/dashboard/frontend/.github/",
+    "morty/dashboard/frontend/*.*",
+    "morty/dashboard/frontend/src/",
+    "morty/dashboard/frontend/public/",
+    "morty/dashboard/frontend/.next/",
+    "morty/dashboard/frontend/node_modules/",
+    "morty/dashboard/frontend/.husky/",
+    "morty/dashboard/frontend/.github/",
 ]
 
 [tool.poetry.dependencies]
