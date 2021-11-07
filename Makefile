@@ -21,4 +21,5 @@ clean-exps:
 
 build:
 	cd ./morty/dashboard/frontend/ && yarn build
+	poetry-dynamic-versioning
 	poetry build

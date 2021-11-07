@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import IO
 
 from morty import Experiment
+from morty.exceptions import TensorflowNotInstalled
 
 try:
     from tensorflow.keras.callbacks import Callback
@@ -16,7 +17,7 @@ except ImportError:
             However, these libraries don't found. Please install them via:
             - pip install tensorflow
             - poetry add tensorflow"""
-        raise ModuleNotFoundError(msg)
+        raise TensorflowNotInstalled(msg)
 
 
 class TensorflowTrainingTracker(Callback):
