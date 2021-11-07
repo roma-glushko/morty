@@ -1,7 +1,5 @@
 # Morty
 
-[![DeepSource](https://deepsource.io/gh/roma-glushko/morty.svg/?label=active+issues&show_trend=true)](https://deepsource.io/gh/roma-glushko/morty/?ref=repository-badge)
-
 <img src="https://github.com/roma-glushko/morty/blob/master/img/morty-in-action.png?raw=true" width="600px" />
 
 Morty is a lightweight experiment and configuration manager for small ML/DL projects and Kaggling.
@@ -102,7 +100,7 @@ If Morty helped you to streamline your research, be sure to mention it via the f
 ```
 @Misc{Glushko2021Morty,
   author =       {Roman Glushko},
-  title =        {Morty - a lightweight experiment and configuration library for small ML/DL projects and Kaggling},
+  title =        {Morty - a lightweight experiment and configuration tracking library for small ML/DL projects and Kaggling},
   howpublished = {Github},
   year =         {2021},
   url =          {https://github.com/roma-glushko/morty}
