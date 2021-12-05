@@ -3,9 +3,9 @@ from typing import Any, Dict, Iterable, Iterator, Tuple
 from tabulate import tabulate
 
 
-class ComponentFactory(Iterable[Tuple[str, Any]]):
+class Registry(Iterable[Tuple[str, Any]]):
     """
-    ComponentFactory is a handy way to create a custom factory to
+    Registry is a handy way to create a custom factory to
     create your ML components (losses, optimizers, feature extractors, etc) in a configurable way.
 
     Inspired by: https://github.com/facebookresearch/fvcore/blob/master/fvcore/common/registry.py

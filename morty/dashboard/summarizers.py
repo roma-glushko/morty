@@ -1,10 +1,9 @@
 from collections import Iterable, defaultdict
+from dataclasses import dataclass
 from typing import Dict, List
 
-from pydantic.main import BaseModel
-
-
-class ColumnStatistics(BaseModel):
+@dataclass
+class ColumnStatistics:
     min: float = 0.0
     max: float = 0.0
     mean: float = 0.0

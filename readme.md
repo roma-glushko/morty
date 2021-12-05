@@ -107,6 +107,18 @@ If Morty helped you to streamline your research, be sure to mention it via the f
 }
 ```
 
+## Acknowledgment
+
+- https://github.com/aimhubio/aim
+- https://devblog.pytorchlightning.ai/introducing-lightningcli-v2-supercharge-your-training-c070d43c7dd6
+- https://github.com/neptune-ai/neptune-client
+- https://github.com/wandb/client/tree/master/wandb
+- https://github.com/allegroai/clearml
+- https://keepsake.ai/
+- https://guild.ai/why-guild/
+- https://metaflow.org/
+- https://github.com/IDSIA/sacred
+
 ## Credentials
 
 Made with ❤️ by Roman Glushko (c)

@@ -2,10 +2,10 @@ import atexit
 from glob import glob
 from os import PathLike
 from pathlib import Path
-from typing import TYPE_CHECKING, Dict, Iterable, Optional, Type, Union
+from typing import TYPE_CHECKING, Iterable, Optional, Type, TypeVar, Union
 
 from morty.common import Directory
-from morty.config import ConfigManager, NotebookConfigManager
+from morty.config import BaseConfig
 from morty.dashboard.indexers import reindex_experiments
 from morty.experiments import Experiment
 from morty.trackers import DEFAULT_TRACKER_LIST
@@ -13,7 +13,7 @@ from morty.trackers import DEFAULT_TRACKER_LIST
 if TYPE_CHECKING:
     from morty.trackers import BaseTracker
 
-Configs = Union[Dict, ConfigManager, NotebookConfigManager]
+ConfigT = TypeVar("ConfigT", bound=BaseConfig)
 
 
 class ExperimentManager:
@@ -25,7 +25,7 @@ class ExperimentManager:
         self,
         root_dir: Union[str, PathLike] = "experiments",
         experiment_trackers: Iterable[Type["BaseTracker"]] = DEFAULT_TRACKER_LIST,
-        configs: Optional[Configs] = None,
+        configs: Optional[ConfigT] = None,
         backup_files: Iterable[str] = (),
     ):
         self.root_directory = root_dir

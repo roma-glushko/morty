@@ -7,14 +7,16 @@ import numpy as np  # noqa
 from tensorflow import keras  # noqa
 from tensorflow.keras import layers  # noqa
 
+from examples.configs.basic_config import Config  # noqa
 from morty import Experiment, ExperimentManager  # noqa
-from morty.config import ConfigManager, config  # noqa
+from morty.cli import Option, run  # noqa
 from morty.trainers import TensorflowTrainingTracker  # noqa
 
 
-@config(path="configs", name="basic_config")
-def train(configs: ConfigManager) -> None:
-    experiment: Experiment = ExperimentManager(configs=configs).create()
+def train(
+    config: Config = Option(default=Config, help="Experiment Configurations")
+) -> None:
+    experiment: Experiment = ExperimentManager(configs=config).create()
 
     # the data, split between train and test sets
     (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
@@ -32,25 +34,25 @@ def train(configs: ConfigManager) -> None:
     print(f"{x_test.shape[0]} test samples")
 
     # convert class vectors to binary class matrices
-    y_train = keras.utils.to_categorical(y_train, configs.num_classes)
-    y_test = keras.utils.to_categorical(y_test, configs.num_classes)
+    y_train = keras.utils.to_categorical(y_train, config.num_classes)
+    y_test = keras.utils.to_categorical(y_test, config.num_classes)
 
     model = keras.Sequential(
         [
-            keras.Input(shape=configs.image_shape),
+            keras.Input(shape=config.image_shape),
             layers.Conv2D(32, kernel_size=(3, 3), activation="relu"),
             layers.MaxPooling2D(pool_size=(2, 2)),
             layers.Conv2D(64, kernel_size=(3, 3), activation="relu"),
             layers.MaxPooling2D(pool_size=(2, 2)),
             layers.Flatten(),
             layers.Dropout(0.5),
-            layers.Dense(configs.num_classes, activation="softmax"),
+            layers.Dense(config.num_classes, activation="softmax"),
         ]
     )
 
     model.compile(
         loss="categorical_crossentropy",
-        optimizer="adam",
+        optimizer=config.optimizer,
         metrics=("accuracy",),
     )
 
@@ -59,9 +61,9 @@ def train(configs: ConfigManager) -> None:
     training_history = model.fit(
         x_train,
         y_train,
-        epochs=configs.epochs,
-        batch_size=configs.batch_size,
-        validation_split=configs.val_dataset_fraction,
+        epochs=config.epochs,
+        batch_size=config.batch_size,
+        validation_split=config.val_dataset_fraction,
         callbacks=(TensorflowTrainingTracker(experiment),),
     )
 
@@ -74,4 +76,4 @@ def train(configs: ConfigManager) -> None:
 
 
 if __name__ == "__main__":
-    train()
+    run(train)

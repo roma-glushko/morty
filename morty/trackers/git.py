@@ -1,15 +1,14 @@
 import warnings
 from contextlib import suppress
+from dataclasses import dataclass
 from os import PathLike, getcwd
 from typing import Optional, Tuple
-
-from pydantic import BaseModel
 
 from morty.exceptions import GitLibNotInstalled
 from morty.trackers.base import BaseTracker
 
-
-class GitDetails(BaseModel):
+@dataclass
+class GitDetails:
     branch: str
     commit_hash: str
 

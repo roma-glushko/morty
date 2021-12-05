@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "morty"
-version = "0.3.0-dev.3"
+version = "0.3.0-dev.4"
 description = "TBU"
 readme = "README.md"
 homepage = "https://github.com/roma-glushko/morty"
@@ -32,15 +32,14 @@ exclude = [
 
 [tool.poetry.dependencies]
 python = ">=3.7,<4.0"
-attrdict = "^2.0.1"
 tabulate = "^0.8.9"
 funkybob = "^2018.5.1"
-pydantic = "^1.8.2"
 click = "^8.0.1"
 rich = "^10.11.0"
 Flask = "^2.0.2"
 tensorflow = { version = "^2.6.0", optional = true }
 humanfriendly = "^10.0"
+typer = "^0.4.0"
 
 [tool.poetry.extras]
 tf = ["tensorflow"]
