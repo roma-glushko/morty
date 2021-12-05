@@ -26,59 +26,56 @@ import numpy as np
 from tensorflow import keras
 from tensorflow.keras import layers
 
-from morty.config import config, ConfigManager
-from morty import ExperimentManager, Experiment
+from examples.configs.basic_config import Config
+from morty import Experiment, ExperimentManager
+from morty.cli import Option, run
 from morty.trainers import TensorflowTrainingTracker
 
 
-@config(path="configs", name="basic_config")
-def train(configs: ConfigManager) -> None:
+def train(
+    config: Config = Option(default=Config, help="Experiment Configurations")
+) -> None:
     experiment: Experiment = ExperimentManager(configs=config).create()
 
-    # the data, split between train and test sets
     (x_train, y_train), (x_test, y_test) = keras.datasets.mnist.load_data()
 
-    # Scale images to the [0, 1] range
     x_train = x_train.astype("float32") / 255
     x_test = x_test.astype("float32") / 255
 
-    # Make sure images have shape (28, 28, 1)
     x_train = np.expand_dims(x_train, -1)
     x_test = np.expand_dims(x_test, -1)
 
-    # convert class vectors to binary class matrices
-    y_train = keras.utils.to_categorical(y_train, configs.num_classes)
-    y_test = keras.utils.to_categorical(y_test, configs.num_classes)
+    y_train = keras.utils.to_categorical(y_train, config.num_classes)
+    y_test = keras.utils.to_categorical(y_test, config.num_classes)
 
     model = keras.Sequential(
         [
-            keras.Input(shape=configs.image_shape),
+            keras.Input(shape=config.image_shape),
             layers.Conv2D(32, kernel_size=(3, 3), activation="relu"),
             layers.MaxPooling2D(pool_size=(2, 2)),
             layers.Conv2D(64, kernel_size=(3, 3), activation="relu"),
             layers.MaxPooling2D(pool_size=(2, 2)),
             layers.Flatten(),
             layers.Dropout(0.5),
-            layers.Dense(configs.num_classes, activation="softmax"),
+            layers.Dense(config.num_classes, activation="softmax"),
         ]
     )
 
     model.compile(
         loss="categorical_crossentropy",
-        optimizer="adam",
+        optimizer=config.optimizer,
         metrics=("accuracy",),
     )
 
     model.summary()
 
     training_history = model.fit(
-        x_train, y_train,
-        epochs=configs.epochs,
-        batch_size=configs.batch_size,
-        validation_split=configs.val_dataset_fraction,
-        callbacks=(
-            TensorflowTrainingTracker(experiment),
-        )
+        x_train,
+        y_train,
+        epochs=config.epochs,
+        batch_size=config.batch_size,
+        validation_split=config.val_dataset_fraction,
+        callbacks=(TensorflowTrainingTracker(experiment),),
     )
 
     experiment.log_artifact("training_history.pkl", training_history)
@@ -90,7 +87,7 @@ def train(configs: ConfigManager) -> None:
 
 
 if __name__ == "__main__":
-    train()
+    run(train)
 ```
 
 ## Citation
