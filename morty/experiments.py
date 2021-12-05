@@ -1,4 +1,5 @@
 from csv import DictReader
+from dataclasses import dataclass
 from datetime import datetime
 from enum import Enum, unique
 from glob import glob
@@ -7,7 +8,6 @@ from pathlib import Path
 from typing import Any, Dict, Iterable, List, Optional, Type
 
 from funkybob import RandomNameGenerator
-from pydantic import BaseModel
 
 from morty.common import Directory, flatten_dict
 from morty.dashboard.summarizers import summarize_trainings
@@ -40,11 +40,11 @@ class ExperimentFiles(str, Enum):
     exceptions = "exceptions.log"
     stdout = "output.log"
 
-
-class ExperimentMeta(BaseModel):
+@dataclass
+class ExperimentMeta:
     created_at: datetime
     experiment_id: str
-    train_runs: List[datetime] = []
+    train_runs: Iterable[datetime] = ()
 
 
 class Experiment:
@@ -193,7 +193,7 @@ class Experiment:
         self.log_meta()
 
         if configs:
-            self.log_configs(configs)
+            self.log_configs(configs.dict())
 
         if backup_files:
             self.backup_files(backup_files)

@@ -1,21 +1,20 @@
 import warnings
 from contextlib import suppress
+from dataclasses import dataclass, asdict
 from datetime import datetime
 from typing import Any, Dict, Iterable, Set
-
-from pydantic.main import BaseModel
 
 from morty import Experiment
 from morty.dashboard.summarizers import summarize_trainings
 from morty.exceptions import IndexWarning
 
-
-class IndexEntry(BaseModel):
+@dataclass
+class IndexEntry:
     last_updated_at: datetime
     data: Dict[str, Any]
 
-
-class ExperimentIndex(BaseModel):
+@dataclass
+class ExperimentIndex:
     last_updated_at: datetime
     columns: Set[str]
     experiments: Dict[str, IndexEntry]
@@ -35,10 +34,10 @@ def reindex_experiments(experiments: Iterable[Experiment]) -> ExperimentIndex:
             git = {}
 
             with suppress(OSError):
-                git = experiment.git.dict()
+                git = asdict(experiment.git)
 
             experiment_data = {
-                **meta.dict(),
+                **asdict(meta),
                 **git,
                 **configs,
                 **train_summary,

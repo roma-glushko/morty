@@ -3,12 +3,12 @@ import pickle
 from json import JSONEncoder
 from os import PathLike
 from pathlib import Path
-from typing import Any, Dict, Iterable, List, Type, Union
+from typing import Any, Dict, Iterable, List, Type, Union, TypeVar
 
-from pydantic import BaseModel
-
+from morty.config import BaseConfig
 from morty.common.serialize import ExperimentEncoder
 
+ConfigT = TypeVar("ConfigT", bound=BaseConfig)
 
 class Directory:
     """
@@ -47,7 +47,7 @@ class Directory:
             raise IOError(f"Failed to open {binary_path}: {str(e)}")
 
     def log_json(
-        self, data: Union[Dict, BaseModel], filename: str, file_ext: str = "json"
+        self, data: Union[Dict, ConfigT], filename: str, file_ext: str = "json"
     ):
         """
         Save data as JSON file
